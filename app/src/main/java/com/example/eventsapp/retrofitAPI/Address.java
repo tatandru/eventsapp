@@ -10,8 +10,6 @@ public class Address implements Serializable {
     private String eventLocation;
 
 
-
-
     public Address(String eventLocation) {
         this.eventLocation = eventLocation;
     }

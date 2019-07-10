@@ -29,13 +29,13 @@ public class HomepageFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         retrofit = RetrofitClient.getInstance();
         loadEvents();
-        return inflater.inflate(R.layout.fragment_homepage,container,false);
+        return inflater.inflate(R.layout.fragment_homepage, container, false);
     }
 
     /**
      * Load Events From BaseRouteEvents
      */
-    private void loadEvents(){
+    private void loadEvents() {
         Call<BaseRouteEvents> call = retrofit.getEventService().getEvents(ApiConstans.APP_KEY);
 
 
@@ -45,14 +45,14 @@ public class HomepageFragment extends Fragment {
 
                 baseRouteEventsBody = response.body();
 
-                for(int i = 0; i< baseRouteEventsBody.getEmbedded().getEventList().size(); i++){
-                    System.out.println("------>"+
+                for (int i = 0; i < baseRouteEventsBody.getEmbedded().getEventList().size(); i++) {
+                    System.out.println("------>" +
                             baseRouteEventsBody.getEmbedded().getEventList().get(i));
                     System.out.println();
 
                 }
 
-                }
+            }
 
             @Override
             public void onFailure(Call<BaseRouteEvents> call, Throwable t) {

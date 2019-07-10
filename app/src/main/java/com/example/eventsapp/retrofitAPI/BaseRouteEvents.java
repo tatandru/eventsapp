@@ -14,7 +14,7 @@ public class BaseRouteEvents implements Serializable {
         this.embedded = embedded;
     }
 
-    public BaseRouteEvents(){
+    public BaseRouteEvents() {
 
     }
 

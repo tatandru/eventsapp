@@ -40,7 +40,6 @@ public class PublicSales implements Serializable {
      */
 
 
-
     @Override
     public String toString() {
         return "PublicSales{" +

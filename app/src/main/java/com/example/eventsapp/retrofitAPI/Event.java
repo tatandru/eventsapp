@@ -32,7 +32,8 @@ public class Event implements Serializable {
     private InfoEmbedded infoEmbedded;
 
 
-    public Event(){}
+    public Event() {
+    }
 
     public Event(String eventName, List<Image> imgList,
                  Sales sales, Dates dates, List<Classfication> classficationList, Promoter promoter, List<PriceRange> priceRangeList,
