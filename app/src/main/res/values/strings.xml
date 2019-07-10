@@ -1,4 +1,3 @@
-<resources>
-    <string name="app_name">EventsApp</string>
+<resources> 
     <string name="txtListOfEventsTitle">Your List of scheduled Events</string>
 </resources>
