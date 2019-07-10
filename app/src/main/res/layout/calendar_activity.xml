@@ -26,7 +26,7 @@
             android:layout_marginStart="@dimen/marginNormal"
             android:layout_marginTop="@dimen/marginNormal"
             android:layout_marginBottom="@dimen/marginNormal"
-            android:text="@string/txtListOfEventsTitle"
+            android:text="Your List of scheduled Events"
             android:textColor="@color/whiteMain"
             android:textSize="15dp"
             app:layout_constraintEnd_toEndOf="parent"
