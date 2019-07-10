@@ -15,7 +15,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:text="Sports"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/whiteMain"
         android:textSize="@dimen/title_size"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="@string/tv_upcoming_events"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/whiteMain"
         android:textSize="@dimen/text_size_upcoming_events"
         app:layout_constraintStart_toStartOf="@+id/guideline21"
         app:layout_constraintTop_toTopOf="@+id/guideline17" />

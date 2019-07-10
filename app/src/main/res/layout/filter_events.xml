@@ -14,7 +14,7 @@
         android:layout_marginStart="24dp"
         android:layout_marginTop="8dp"
         android:text="@string/tv_title_filter"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/whiteMain"
         android:textSize="@dimen/title_size"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline13" />
@@ -39,7 +39,7 @@
         android:textSize="@dimen/title_size"
         app:layout_constraintBottom_toTopOf="@+id/guideline14"
         app:layout_constraintStart_toEndOf="@+id/img_dollar"
-        android:textColor="@color/colorWhite"/>
+        android:textColor="@color/whiteMain"/>
 
     <TextView
         android:id="@+id/tv_price_min"
@@ -49,7 +49,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/tv_price_min"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/whiteMain"
         android:textSize="@dimen/text_size"
         app:layout_constraintBottom_toTopOf="@+id/guideline18"
         app:layout_constraintEnd_toStartOf="@+id/seekBar"
@@ -63,7 +63,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/tv_price_max"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/whiteMain"
         android:textSize="@dimen/text_size"
         app:layout_constraintBottom_toTopOf="@+id/guideline18"
         app:layout_constraintEnd_toEndOf="parent"
@@ -76,7 +76,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/tv_text_date_range"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/whiteMain"
         android:textSize="@dimen/text_size"
         app:layout_constraintBottom_toTopOf="@+id/guideline19"
         app:layout_constraintStart_toEndOf="@+id/img_calendar"
@@ -99,7 +99,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:hint="@string/hint_date"
-        android:textColorHint="@color/colorWhite"
+        android:textColorHint="@color/whiteMain"
         app:layout_constraintStart_toStartOf="@+id/guideline20"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
@@ -110,7 +110,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/tv_to"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/whiteMain"
         android:textSize="@dimen/text_size"
         app:layout_constraintStart_toStartOf="@+id/guideline20"
         app:layout_constraintTop_toBottomOf="@+id/edt_stop_date" />
@@ -120,7 +120,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:hint="@string/hint_date"
-        android:textColorHint="@color/colorWhite"
+        android:textColorHint="@color/whiteMain"
         app:layout_constraintStart_toStartOf="@+id/guideline20"
         app:layout_constraintTop_toBottomOf="@+id/tv_date" />
 
@@ -130,7 +130,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="@string/tv_date"
-        android:textColor="@color/colorWhite"
+        android:textColor="@color/whiteMain"
         android:textSize="@dimen/text_size"
         app:layout_constraintStart_toStartOf="@+id/guideline20"
         app:layout_constraintTop_toTopOf="@+id/guideline19" />
