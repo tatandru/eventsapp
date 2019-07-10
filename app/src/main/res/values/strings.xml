@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">eventsapp</string>
     <string name="title_activity_homepage">Homepage</string>
     <string name="categories">Categories</string>
     <string name="home_page">Home Page</string>
