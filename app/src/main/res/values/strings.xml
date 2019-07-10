@@ -5,6 +5,5 @@
     <string name="categories">Categories</string>
     <string name="home_page">Home Page</string>
     <string name="favorites">Favorites</string>
-    <string name="open">open</string>
-    <string name="close">close</string>
+    
 </resources>
