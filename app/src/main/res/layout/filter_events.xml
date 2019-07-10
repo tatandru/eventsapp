@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary">
@@ -36,10 +34,10 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:text="@string/tv_text_price_range"
+        android:textColor="@color/whiteMain"
         android:textSize="@dimen/title_size"
         app:layout_constraintBottom_toTopOf="@+id/guideline14"
-        app:layout_constraintStart_toEndOf="@+id/img_dollar"
-        android:textColor="@color/whiteMain"/>
+        app:layout_constraintStart_toEndOf="@+id/img_dollar" />
 
     <TextView
         android:id="@+id/tv_price_min"
@@ -114,6 +112,7 @@
         android:textSize="@dimen/text_size"
         app:layout_constraintStart_toStartOf="@+id/guideline20"
         app:layout_constraintTop_toBottomOf="@+id/edt_stop_date" />
+
     <EditText
         android:id="@+id/edt_stop_date"
         android:layout_width="wrap_content"
@@ -134,6 +133,7 @@
         android:textSize="@dimen/text_size"
         app:layout_constraintStart_toStartOf="@+id/guideline20"
         app:layout_constraintTop_toTopOf="@+id/guideline19" />
+
     <SeekBar
         android:id="@+id/seekBar_price"
         android:layout_width="250dp"
@@ -195,4 +195,4 @@
         android:orientation="vertical"
         app:layout_constraintGuide_begin="69dp" />
 
-</android.support.constraint.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
