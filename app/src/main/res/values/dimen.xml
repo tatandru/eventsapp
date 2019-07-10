@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--Margins-->
+    <dimen name="marginNormal">8dp</dimen>
+
+    <!--Text size-->
+    <dimen name="txtTitle">30dp</dimen>
+</resources>
