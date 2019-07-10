@@ -1,2 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="app_name">eventsapp</string>
+    <string name="title_activity_homepage">Homepage</string>
+    <string name="open">open</string>
+    <string name="close">close</string>
+</resources>
