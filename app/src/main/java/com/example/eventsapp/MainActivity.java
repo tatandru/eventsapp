@@ -61,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
                 switch (id) {
                     case R.id.homepage:
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new HomepageFragment()).commit();
-                        setupSearch();
                         break;
                     case R.id.calendar:
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new CalendarFragment()).commit();
@@ -109,12 +108,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     private void setupSearch(){
+        //Todo:de refacut cu intent https://developers.google.com/places/android-sdk/autocomplete#option_2_use_an_intent_to_launch_the_autocomplete_activity
         AutocompleteSupportFragment autocomplete;
         String placesApiKey = "AIzaSyDuqYtttuZVl-51XFiyhreLb4kxMjKqBVE";
         Places.initialize(this, placesApiKey);
         PlacesClient placesClient = Places.createClient(this);
         autocomplete = (AutocompleteSupportFragment) this.getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-        autocomplete.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+        //autocomplete.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
         autocomplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(@NonNull Place place) {

@@ -45,9 +45,8 @@ public class HomepageFragment extends Fragment {
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        //initilizePlaces();
-        //initializeSearchBar();
         super.onActivityCreated(savedInstanceState);
+        //setupSearch();
     }
 
     /**
