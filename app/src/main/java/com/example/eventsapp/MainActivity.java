@@ -2,6 +2,13 @@ package com.example.eventsapp;
 
 import android.os.Bundle;
 
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.api.net.PlacesClient;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +20,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.view.MenuItem;
 import android.widget.Toast;
+
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
@@ -52,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
                 switch (id) {
                     case R.id.homepage:
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new HomepageFragment()).commit();
+                        setupSearch();
                         break;
                     case R.id.calendar:
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new CalendarFragment()).commit();
@@ -97,6 +107,25 @@ public class MainActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+    private void setupSearch(){
+        AutocompleteSupportFragment autocomplete;
+        String placesApiKey = "AIzaSyDuqYtttuZVl-51XFiyhreLb4kxMjKqBVE";
+        Places.initialize(this, placesApiKey);
+        PlacesClient placesClient = Places.createClient(this);
+        autocomplete = (AutocompleteSupportFragment) this.getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+        autocomplete.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+        autocomplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                Toast.makeText(MainActivity.this, "sadfsadf", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(@NonNull Status status) {
+                Toast.makeText(MainActivity.this, "Location does not exist!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
