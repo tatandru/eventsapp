@@ -35,8 +35,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         initUI();
-        if(savedInstanceState==null){
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new HomepageFragment()).commit();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomepageFragment()).commit();
             drawerMenu.setCheckedItem(R.id.homepage);
         }
         setMenuListener();
@@ -60,25 +60,27 @@ public class MainActivity extends AppCompatActivity {
                 int id = menuItem.getItemId();
                 switch (id) {
                     case R.id.homepage:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new HomepageFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomepageFragment()).commit();
                         break;
                     case R.id.calendar:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new CalendarFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new CalendarFragment()).commit();
                         break;
                     case R.id.favorites:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new FavoritesFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FavoritesFragment()).commit();
                         break;
                     case R.id.feedback:
                         Toast.makeText(MainActivity.this, "Feedback", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.settings:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new SettingsFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SettingsFragment()).commit();
 
                         break;
                     default:
                         drawerLayout.closeDrawers();
                         return true;
                 }
+                drawerLayout.closeDrawers();
+
                 return true;
             }
         });
@@ -106,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
 
 
 }
