@@ -1,14 +1,13 @@
 package com.example.eventsapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.libraries.places.api.Places;
+
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.TypeFilter;
-import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -22,6 +21,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
@@ -35,8 +35,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         initUI();
-        if(savedInstanceState==null){
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new HomepageFragment()).commit();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomepageFragment()).commit();
             drawerMenu.setCheckedItem(R.id.homepage);
         }
         setMenuListener();
@@ -60,19 +60,19 @@ public class MainActivity extends AppCompatActivity {
                 int id = menuItem.getItemId();
                 switch (id) {
                     case R.id.homepage:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new HomepageFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomepageFragment()).commit();
                         break;
                     case R.id.calendar:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new CalendarFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new CalendarFragment()).commit();
                         break;
                     case R.id.favorites:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new FavoritesFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FavoritesFragment()).commit();
                         break;
                     case R.id.feedback:
                         Toast.makeText(MainActivity.this, "Feedback", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.settings:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,new SettingsFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SettingsFragment()).commit();
 
                         break;
                     default:
@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                 }
                 drawerLayout.closeDrawers();
+
                 return true;
             }
         });
@@ -106,26 +107,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
-    }
-    private void setupSearch(){
-        //Todo:de refacut cu intent https://developers.google.com/places/android-sdk/autocomplete#option_2_use_an_intent_to_launch_the_autocomplete_activity
-        AutocompleteSupportFragment autocomplete;
-        String placesApiKey = "AIzaSyDuqYtttuZVl-51XFiyhreLb4kxMjKqBVE";
-        Places.initialize(this, placesApiKey);
-        PlacesClient placesClient = Places.createClient(this);
-        autocomplete = (AutocompleteSupportFragment) this.getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-        //autocomplete.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
-        autocomplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(@NonNull Place place) {
-                Toast.makeText(MainActivity.this, "sadfsadf", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onError(@NonNull Status status) {
-                Toast.makeText(MainActivity.this, "Location does not exist!", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
 
