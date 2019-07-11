@@ -3,6 +3,7 @@
     package="com.example.eventsapp">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <application
         android:usesCleartextTraffic="true"
         android:allowBackup="true"
@@ -14,10 +15,14 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.VIEW"/>
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="f1d8dfdc4eecf6a683e9e0f11e8cc309"/>
     </application>
 
 </manifest>
