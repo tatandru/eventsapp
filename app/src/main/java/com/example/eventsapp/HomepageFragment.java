@@ -31,15 +31,26 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomepageFragment extends Fragment {
+    private RecyclerView rvItems;
+
+    private RecyclerView.LayoutManager layoutManager;
+    private AutocompleteSupportFragment autocomplete;
     private RetrofitClient retrofit;
     private BaseRouteEvents baseRouteEventsBody;
+    private CategoriesRVAdapter adapter;
+    private List<String> dataSet;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_homepage, container, false);
         retrofit = RetrofitClient.getInstance();
+        rvItems = view.findViewById(R.id.rv_categories);
         loadEvents();
-        return inflater.inflate(R.layout.fragment_homepage, container, false);
+        setupList();
+        return view;
     }
 
     @Override
@@ -60,36 +71,13 @@ public class HomepageFragment extends Fragment {
             public void onResponse(Call<BaseRouteEvents> call, Response<BaseRouteEvents> response) {
 
                 baseRouteEventsBody = response.body();
-                int eventListSize = baseRouteEventsBody.getEmbedded().getEventList().size();
-                List<String> eventClassificationList = new ArrayList<>();
-                List<List<String>> urlList = new ArrayList<>();
 
+                for (int i = 0; i < baseRouteEventsBody.getEmbedded().getEventList().size(); i++) {
+                    System.out.println("------>" +
+                            baseRouteEventsBody.getEmbedded().getEventList().get(i));
+                    System.out.println();
 
-                for (int i = 0; i < eventListSize; i++) {
-
-                    int classificationListSize = baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().size();
-                    int imageListSize = baseRouteEventsBody.getEmbedded().getEventList().get(i).getImgList().size();
-                    List<String> imageList = new ArrayList<>();
-                    System.out.println("------>" + baseRouteEventsBody.getEmbedded().getEventList().get(i));
-
-
-                    for (int j = 0; j < classificationListSize; j++) {
-                        String classificationName = baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().get(j).getSegment().getEventType();
-                        if (!eventClassificationList.contains(classificationName)) {
-                            eventClassificationList.add(classificationName);
-                        }
-                    }
-
-
-                    for (int j = 0; j < imageListSize; j++) {
-                        String url = baseRouteEventsBody.getEmbedded().getEventList().get(i).getImgList().get(j).getImageURL();
-                        imageList.add(url);
-                    }
-                    urlList.add(imageList);
                 }
-                System.out.println(eventClassificationList.toString());
-                System.out.println(urlList.toString());
-
 
             }
 
@@ -102,6 +90,74 @@ public class HomepageFragment extends Fragment {
 
     }
 
+    private void initializeSearchBar() {
+        autocomplete = (AutocompleteSupportFragment) this.getActivity().getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+        autocomplete.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+        autocomplete.setTypeFilter(TypeFilter.CITIES);
+        autocomplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                Toast.makeText(getActivity(), "sadfsadf", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(@NonNull Status status) {
+                Toast.makeText(getActivity(), "Location does not exist!", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void initilizePlaces() {
+        String placesApiKey = "AIzaSyDuqYtttuZVl-51XFiyhreLb4kxMjKqBVE";
+        Places.initialize(getActivity(), placesApiKey);
+        PlacesClient placesClient = Places.createClient(getActivity());
+    }
+    private void setupList() {
+        //  layoutManager = new LinearLayoutManager(getContext());  // use a linear layout manager vertical
+        layoutManager = new GridLayoutManager(getContext(),2);  // use a grid layout manager with 2 columns
+        rvItems.setLayoutManager(layoutManager);
+
+        generateDataSet();
+
+        adapter = new CategoriesRVAdapter(dataSet, getContext());
+        adapter.setCategoryClickListener(new CategoriesRVAdapter.ItemClickListener() {
+            @Override
+            public void onClick(String os) {
+
+                try {
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new UpcomingEventsFragment()).commit();
+                }catch (Exception e)
+                { e.printStackTrace();
+                    Toast.makeText(getContext(), os, Toast.LENGTH_SHORT).show();
+                }}
+        });
+        rvItems.setAdapter(adapter);
+
+    }
+
+
+    private void generateDataSet() {
+        dataSet = new ArrayList<>();
+
+
+        List<String> myList = new ArrayList<>();
+
+
+        myList.add("Sports");
+        myList.add("Music");
+        myList.add("Art & Theatre");
+        myList.add("Family");
+        myList.add("Fairs & Exhibitions");
+        myList.add("Comedy");
+        myList.add("Festivals");
+        myList.add("Clubs");
+
+        Log.e("TAG", myList.toString());
+
+        for (String c : myList) {
+            dataSet.add(c);
+        }
+    }
     private void setupSearch() {
         //Todo:de refacut cu intent https://developers.google.com/places/android-sdk/autocomplete#option_2_use_an_intent_to_launch_the_autocomplete_activity
         final int AUTOCOMPLETE_REQUEST_CODE = 1;
