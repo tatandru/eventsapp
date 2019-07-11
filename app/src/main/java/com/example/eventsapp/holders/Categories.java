@@ -5,23 +5,26 @@ import java.util.List;
 public class Categories {
 
     List<String> categories;
+    List<String> imagesURL;
 
 
     public Categories() {
         // ---
     }
 
-    public Categories(List<String> categories) {
-
-        this.categories = categories;
-    }
-
-
-    public List<String> getItem() {
+    public List<String> getCategories() {
         return categories;
     }
 
-    public void setItem(List<String> categories) {
+    public void setCategories(List<String> categories) {
         this.categories = categories;
+    }
+
+    public List<String> getImagesURL() {
+        return imagesURL;
+    }
+
+    public void setImagesURL(List<String> imagesURL) {
+        this.imagesURL = imagesURL;
     }
 }

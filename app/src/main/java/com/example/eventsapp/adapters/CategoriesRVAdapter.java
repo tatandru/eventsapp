@@ -3,11 +3,17 @@ package com.example.eventsapp.adapters;
 import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.example.eventsapp.HomepageFragment;
+import com.example.eventsapp.MainActivity;
 import com.example.eventsapp.R;
 
 import java.util.ArrayList;
@@ -18,7 +24,9 @@ public class CategoriesRVAdapter extends RecyclerView.Adapter<CategoriesRVAdapte
 
     private final LayoutInflater inflater;
     private List<String> categoriesList;
+    private List<String> urlImagesList;
     private ItemClickListener itemClickListener;
+    private Context context;
 
     public void setCategoryClickListener(ItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
@@ -26,10 +34,13 @@ public class CategoriesRVAdapter extends RecyclerView.Adapter<CategoriesRVAdapte
 
 
 
-    public CategoriesRVAdapter(List<String> items, Context context) {
+    public CategoriesRVAdapter(List<String> items,List<String> urlImages, Context context) {
         this.categoriesList = new ArrayList<>(2);
+        this.urlImagesList = new ArrayList<>(2);
         this.categoriesList = items;
+        this.urlImagesList = urlImages;
         this.inflater = LayoutInflater.from(context);
+        this.context = context;
     }
 
     public interface ItemClickListener {
@@ -39,15 +50,18 @@ public class CategoriesRVAdapter extends RecyclerView.Adapter<CategoriesRVAdapte
     @NonNull
     @Override
     public ItemsViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        return new ItemsViewHolder(inflater.inflate(R.layout.favorite_item, viewGroup, false));
+        return new ItemsViewHolder(inflater.inflate(R.layout.category_item, viewGroup, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ItemsViewHolder citiesViewHolder, int i) {
 
         final String item = this.categoriesList.get(i);
+        final String url = this.urlImagesList.get(i);
 
         citiesViewHolder.txtItem.setText(item);
+
+        Glide.with(context).load(url).into(citiesViewHolder.categoryIcon);
 
 
         citiesViewHolder.locationItemRoot.setOnClickListener(new View.OnClickListener() {
@@ -55,6 +69,7 @@ public class CategoriesRVAdapter extends RecyclerView.Adapter<CategoriesRVAdapte
             public void onClick(View v) {
                 if (itemClickListener != null) {
                     itemClickListener.onClick(item);
+                    itemClickListener.onClick(url);
                 }
             }
         });
@@ -68,14 +83,14 @@ public class CategoriesRVAdapter extends RecyclerView.Adapter<CategoriesRVAdapte
     class ItemsViewHolder extends RecyclerView.ViewHolder {
         private final View locationItemRoot;
         private final TextView txtItem;
-    //    private final TextView txtItem2;
+        private final ImageView categoryIcon;
 
 
         ItemsViewHolder(final View itemView) {
             super(itemView);
-            this.locationItemRoot = itemView.findViewById(R.id.cl_favoriteItem);
-            this.txtItem = itemView.findViewById(R.id.txt_favoriteItemTitle);
-          //  this.txtItem2 = itemView.findViewById(R.id.rv_second_category);
+            this.locationItemRoot = itemView.findViewById(R.id.cl_categoryRootItem);
+            this.txtItem = itemView.findViewById(R.id.txt_categoryItem);
+            this.categoryIcon = itemView.findViewById(R.id.img_categoryItem);
 
         }
     }
