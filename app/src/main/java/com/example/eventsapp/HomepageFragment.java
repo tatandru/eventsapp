@@ -2,15 +2,20 @@ package com.example.eventsapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.eventsapp.adapters.CategoriesRVAdapter;
 import com.example.eventsapp.retrofitAPI.ApiConstans;
 import com.example.eventsapp.retrofitAPI.BaseRouteEvents;
 import com.example.eventsapp.retrofitAPI.RetrofitClient;
@@ -19,6 +24,7 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
 import java.util.Arrays;
@@ -90,28 +96,6 @@ public class HomepageFragment extends Fragment {
 
     }
 
-    private void initializeSearchBar() {
-        autocomplete = (AutocompleteSupportFragment) this.getActivity().getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
-        autocomplete.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
-        autocomplete.setTypeFilter(TypeFilter.CITIES);
-        autocomplete.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-            @Override
-            public void onPlaceSelected(@NonNull Place place) {
-                Toast.makeText(getActivity(), "sadfsadf", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onError(@NonNull Status status) {
-                Toast.makeText(getActivity(), "Location does not exist!", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void initilizePlaces() {
-        String placesApiKey = "AIzaSyDuqYtttuZVl-51XFiyhreLb4kxMjKqBVE";
-        Places.initialize(getActivity(), placesApiKey);
-        PlacesClient placesClient = Places.createClient(getActivity());
-    }
     private void setupList() {
         //  layoutManager = new LinearLayoutManager(getContext());  // use a linear layout manager vertical
         layoutManager = new GridLayoutManager(getContext(),2);  // use a grid layout manager with 2 columns
