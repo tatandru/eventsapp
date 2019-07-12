@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -112,7 +113,16 @@ public class HomepageFragment extends Fragment {
             public void onClick(String os) {
 
                 try {
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new UpcomingEventsFragment()).commit();
+                    FragmentTransaction transection=getFragmentManager().beginTransaction();
+                    UpcomingEventsFragment mfragment=new UpcomingEventsFragment();
+
+
+
+                    Bundle bundle=new Bundle();
+                    bundle.putString("title",os);
+                    mfragment.setArguments(bundle); //data being send to SecondFragment
+                    transection.replace(R.id.fragment_container, mfragment);
+                    transection.commit();
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(getContext(), os, Toast.LENGTH_SHORT).show();
