@@ -7,11 +7,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,7 +40,7 @@ import retrofit2.Response;
 
 public class HomepageFragment extends Fragment {
     private RecyclerView rvItems;
-
+private TextView tvTitle;
     private RecyclerView.LayoutManager layoutManager;
     private AutocompleteSupportFragment autocomplete;
     private RetrofitClient retrofit;
@@ -54,8 +56,11 @@ public class HomepageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_homepage, container, false);
         retrofit = RetrofitClient.getInstance();
         rvItems = view.findViewById(R.id.rv_categories);
+
         loadEvents();
+
         setupList();
+        tvTitle=view.findViewById(R.id.txt_favoriteItemTitle);
         return view;
     }
 
@@ -109,7 +114,18 @@ public class HomepageFragment extends Fragment {
             public void onClick(String os) {
 
                 try {
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new UpcomingEventsFragment()).commit();
+
+                    FragmentTransaction transection=getFragmentManager().beginTransaction();
+                    UpcomingEventsFragment mfragment=new UpcomingEventsFragment();
+//using Bundle to send data
+
+
+                    Bundle bundle=new Bundle();
+                    bundle.putString("title",os);
+                    mfragment.setArguments(bundle); //data being send to SecondFragment
+                    transection.replace(R.id.fragment_container, mfragment);
+                    transection.commit();
+                  // getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new UpcomingEventsFragment()).commit();
                 }catch (Exception e)
                 { e.printStackTrace();
                     Toast.makeText(getContext(), os, Toast.LENGTH_SHORT).show();
