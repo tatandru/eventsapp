@@ -30,6 +30,8 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import java.util.Arrays;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -44,7 +46,8 @@ public class HomepageFragment extends Fragment {
     private RetrofitClient retrofit;
     private BaseRouteEvents baseRouteEventsBody;
     private CategoriesRVAdapter adapter;
-    private List<String> dataSet;
+    private List<String> categoryTitleDataSet;
+    private List<String> urlDateSet;
 
 
     @Nullable
@@ -98,22 +101,23 @@ public class HomepageFragment extends Fragment {
 
     private void setupList() {
         //  layoutManager = new LinearLayoutManager(getContext());  // use a linear layout manager vertical
-        layoutManager = new GridLayoutManager(getContext(),2);  // use a grid layout manager with 2 columns
+        layoutManager = new GridLayoutManager(getContext(), 2);  // use a grid layout manager with 2 columns
         rvItems.setLayoutManager(layoutManager);
 
         generateDataSet();
 
-        adapter = new CategoriesRVAdapter(dataSet, getContext());
+        adapter = new CategoriesRVAdapter(categoryTitleDataSet, urlDateSet, getContext());
         adapter.setCategoryClickListener(new CategoriesRVAdapter.ItemClickListener() {
             @Override
             public void onClick(String os) {
 
                 try {
                     getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new UpcomingEventsFragment()).commit();
-                }catch (Exception e)
-                { e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
                     Toast.makeText(getContext(), os, Toast.LENGTH_SHORT).show();
-                }}
+                }
+            }
         });
         rvItems.setAdapter(adapter);
 
@@ -121,27 +125,47 @@ public class HomepageFragment extends Fragment {
 
 
     private void generateDataSet() {
-        dataSet = new ArrayList<>();
+        categoryTitleDataSet = new ArrayList<>();
+        urlDateSet = new ArrayList<>();
 
 
-        List<String> myList = new ArrayList<>();
+        List<String> categoriesData = new ArrayList<>();
+        List<String> urlData = new ArrayList<>();
 
 
-        myList.add("Sports");
-        myList.add("Music");
-        myList.add("Art & Theatre");
-        myList.add("Family");
-        myList.add("Fairs & Exhibitions");
-        myList.add("Comedy");
-        myList.add("Festivals");
-        myList.add("Clubs");
+        categoriesData.add("Sports");
+        categoriesData.add("Music");
+        categoriesData.add("Art & Theatre");
+        categoriesData.add("Family");
+        categoriesData.add("Fairs & Exhibitions");
+        categoriesData.add("Comedy");
+        categoriesData.add("Festivals");
+        categoriesData.add("Clubs");
 
-        Log.e("TAG", myList.toString());
+        urlData.add("https://i.postimg.cc/nhhrwb6B/Sports.png");
+        urlData.add("https://i.postimg.cc/fRqLGqNF/Music.png");
+        urlData.add("https://i.postimg.cc/hGhJhWsc/Art-Theater.png");
+        urlData.add("https://i.postimg.cc/J030S1rc/Family.png");
+        urlData.add("https://i.postimg.cc/Pr4N4rFd/Fairs-Exhibitions.png");
+        urlData.add("https://i.postimg.cc/T2nKKcVL/Comedy.png");
+        urlData.add("https://i.postimg.cc/BQsXH1ph/Festivals.png");
+        urlData.add("https://i.postimg.cc/Kjh49K28/Club.png");
 
-        for (String c : myList) {
-            dataSet.add(c);
+
+        Log.e("TAG", categoriesData.toString());
+        for (String c : categoriesData) {
+            categoryTitleDataSet.add(c);
         }
+
+
+        Log.e("TAG", categoriesData.toString());
+        for (String u : urlData) {
+            urlDateSet.add(u);
+        }
+
+
     }
+
     private void setupSearch() {
         //Todo:de refacut cu intent https://developers.google.com/places/android-sdk/autocomplete#option_2_use_an_intent_to_launch_the_autocomplete_activity
         final int AUTOCOMPLETE_REQUEST_CODE = 1;
