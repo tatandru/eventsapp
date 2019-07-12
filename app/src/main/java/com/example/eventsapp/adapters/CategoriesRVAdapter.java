@@ -66,7 +66,7 @@ public class CategoriesRVAdapter extends RecyclerView.Adapter<CategoriesRVAdapte
             public void onClick(View v) {
                 if (itemClickListener != null) {
                     itemClickListener.onClick(item);
-                    itemClickListener.onClick(url);
+
                 }
             }
         });

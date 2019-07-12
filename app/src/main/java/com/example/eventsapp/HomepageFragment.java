@@ -180,7 +180,7 @@ public class HomepageFragment extends Fragment {
     private void setupSearch() {
         //Todo:de refacut cu intent https://developers.google.com/places/android-sdk/autocomplete#option_2_use_an_intent_to_launch_the_autocomplete_activity
         final int AUTOCOMPLETE_REQUEST_CODE = 1;
-        String placesApiKey = "f1d8dfdc4eecf6a683e9e0f11e8cc309";
+        String placesApiKey = "AIzaSyCxLXd2mtdZtf7UjTpymS45BWto4JumZ3k";
         Places.initialize(this.getActivity(), placesApiKey);
         PlacesClient placesClient = Places.createClient(this.getActivity());
         List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
