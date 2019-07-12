@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -32,6 +31,8 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import java.util.Arrays;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -40,13 +41,14 @@ import retrofit2.Response;
 
 public class HomepageFragment extends Fragment {
     private RecyclerView rvItems;
-private TextView tvTitle;
+
     private RecyclerView.LayoutManager layoutManager;
     private AutocompleteSupportFragment autocomplete;
     private RetrofitClient retrofit;
     private BaseRouteEvents baseRouteEventsBody;
     private CategoriesRVAdapter adapter;
-    private List<String> dataSet;
+    private List<String> categoryTitleDataSet;
+    private List<String> urlDateSet;
 
 
     @Nullable
@@ -56,11 +58,8 @@ private TextView tvTitle;
         View view = inflater.inflate(R.layout.fragment_homepage, container, false);
         retrofit = RetrofitClient.getInstance();
         rvItems = view.findViewById(R.id.rv_categories);
-
         loadEvents();
-
         setupList();
-        tvTitle=view.findViewById(R.id.txt_favoriteItemTitle);
         return view;
     }
 
@@ -103,21 +102,21 @@ private TextView tvTitle;
 
     private void setupList() {
         //  layoutManager = new LinearLayoutManager(getContext());  // use a linear layout manager vertical
-        layoutManager = new GridLayoutManager(getContext(),2);  // use a grid layout manager with 2 columns
+        layoutManager = new GridLayoutManager(getContext(), 2);  // use a grid layout manager with 2 columns
         rvItems.setLayoutManager(layoutManager);
 
         generateDataSet();
 
-        adapter = new CategoriesRVAdapter(dataSet, getContext());
+        adapter = new CategoriesRVAdapter(categoryTitleDataSet, urlDateSet, getContext());
         adapter.setCategoryClickListener(new CategoriesRVAdapter.ItemClickListener() {
             @Override
             public void onClick(String os) {
 
-                try {
 
+                try {
                     FragmentTransaction transection=getFragmentManager().beginTransaction();
                     UpcomingEventsFragment mfragment=new UpcomingEventsFragment();
-//using Bundle to send data
+
 
 
                     Bundle bundle=new Bundle();
@@ -125,11 +124,11 @@ private TextView tvTitle;
                     mfragment.setArguments(bundle); //data being send to SecondFragment
                     transection.replace(R.id.fragment_container, mfragment);
                     transection.commit();
-                  // getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new UpcomingEventsFragment()).commit();
-                }catch (Exception e)
-                { e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
                     Toast.makeText(getContext(), os, Toast.LENGTH_SHORT).show();
-                }}
+                }
+            }
         });
         rvItems.setAdapter(adapter);
 
@@ -137,31 +136,51 @@ private TextView tvTitle;
 
 
     private void generateDataSet() {
-        dataSet = new ArrayList<>();
+        categoryTitleDataSet = new ArrayList<>();
+        urlDateSet = new ArrayList<>();
 
 
-        List<String> myList = new ArrayList<>();
+        List<String> categoriesData = new ArrayList<>();
+        List<String> urlData = new ArrayList<>();
 
 
-        myList.add("Sports");
-        myList.add("Music");
-        myList.add("Art & Theatre");
-        myList.add("Family");
-        myList.add("Fairs & Exhibitions");
-        myList.add("Comedy");
-        myList.add("Festivals");
-        myList.add("Clubs");
+        categoriesData.add("Sports");
+        categoriesData.add("Music");
+        categoriesData.add("Art & Theatre");
+        categoriesData.add("Family");
+        categoriesData.add("Fairs & Exhibitions");
+        categoriesData.add("Comedy");
+        categoriesData.add("Festivals");
+        categoriesData.add("Clubs");
 
-        Log.e("TAG", myList.toString());
+        urlData.add("https://i.postimg.cc/nhhrwb6B/Sports.png");
+        urlData.add("https://i.postimg.cc/fRqLGqNF/Music.png");
+        urlData.add("https://i.postimg.cc/hGhJhWsc/Art-Theater.png");
+        urlData.add("https://i.postimg.cc/J030S1rc/Family.png");
+        urlData.add("https://i.postimg.cc/Pr4N4rFd/Fairs-Exhibitions.png");
+        urlData.add("https://i.postimg.cc/T2nKKcVL/Comedy.png");
+        urlData.add("https://i.postimg.cc/BQsXH1ph/Festivals.png");
+        urlData.add("https://i.postimg.cc/Kjh49K28/Club.png");
 
-        for (String c : myList) {
-            dataSet.add(c);
+
+        Log.e("TAG", categoriesData.toString());
+        for (String c : categoriesData) {
+            categoryTitleDataSet.add(c);
         }
+
+
+        Log.e("TAG", categoriesData.toString());
+        for (String u : urlData) {
+            urlDateSet.add(u);
+        }
+
+
     }
+
     private void setupSearch() {
         //Todo:de refacut cu intent https://developers.google.com/places/android-sdk/autocomplete#option_2_use_an_intent_to_launch_the_autocomplete_activity
         final int AUTOCOMPLETE_REQUEST_CODE = 1;
-        String placesApiKey = "AIzaSyCxLXd2mtdZtf7UjTpymS45BWto4JumZ3k";
+        String placesApiKey = "f1d8dfdc4eecf6a683e9e0f11e8cc309";
         Places.initialize(this.getActivity(), placesApiKey);
         PlacesClient placesClient = Places.createClient(this.getActivity());
         List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);

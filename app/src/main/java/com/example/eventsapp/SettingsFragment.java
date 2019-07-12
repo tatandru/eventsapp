@@ -24,9 +24,9 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View v)
             {
-               getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomepageFragment()).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomepageFragment()).commit();
             }
         });
-     return  view;
+        return  view;
     }
 }

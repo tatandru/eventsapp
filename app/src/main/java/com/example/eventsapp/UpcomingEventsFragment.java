@@ -23,11 +23,11 @@ public class UpcomingEventsFragment extends Fragment {
         tvTitle=view.findViewById(R.id.tv_title_upcoming_events);
         Bundle bundle=getArguments();
 
-       if(bundle!=null) {
-           System.out.println(bundle.getString("title"));
+        if(bundle!=null) {
+            System.out.println(bundle.getString("title"));
 
-        tvTitle.setText(String.valueOf(bundle.getString("title")));
-       }System.out.println();
+            tvTitle.setText(String.valueOf(bundle.getString("title")));
+        }System.out.println();
         imageView = (ImageView) view.findViewById(R.id.img_filter_logo);
         imageView.setOnClickListener(new View.OnClickListener()
         {
@@ -37,7 +37,7 @@ public class UpcomingEventsFragment extends Fragment {
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FilterFragment()).commit();
             }
         });
-    return view;
+        return view;
     }
 
 }
