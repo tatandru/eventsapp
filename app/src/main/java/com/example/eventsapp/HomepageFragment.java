@@ -1,16 +1,21 @@
 package com.example.eventsapp;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -40,6 +45,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class HomepageFragment extends Fragment {
+    private static final int MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 1;
     private RecyclerView rvItems;
 
     private RecyclerView.LayoutManager layoutManager;
@@ -66,7 +72,8 @@ public class HomepageFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        setupSearch();
+        //setupSearch();
+        configureRequestButton();
     }
 
     /**
@@ -112,22 +119,22 @@ public class HomepageFragment extends Fragment {
             @Override
             public void onClick(String os) {
 
-
-                try {
-                    FragmentTransaction transection=getFragmentManager().beginTransaction();
-                    UpcomingEventsFragment mfragment=new UpcomingEventsFragment();
-
-
-
-                    Bundle bundle=new Bundle();
-                    bundle.putString("title",os);
-                    mfragment.setArguments(bundle); //data being send to SecondFragment
-                    transection.replace(R.id.fragment_container, mfragment);
-                    transection.commit();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(getContext(), os, Toast.LENGTH_SHORT).show();
-                }
+                Toast.makeText(getActivity(), "Coming soon", Toast.LENGTH_SHORT).show();
+//                try {
+//                    FragmentTransaction transaction=getFragmentManager().beginTransaction();
+//                    UpcomingEventsFragment eventsFragment=new UpcomingEventsFragment();
+//
+//
+//
+//                    Bundle bundle=new Bundle();
+//                    bundle.putString("title",os);
+//                    eventsFragment.setArguments(bundle); //data being send to SecondFragment
+//                    transaction.replace(R.id.fragment_container, eventsFragment);
+//                    transaction.commit();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    Toast.makeText(getContext(), os, Toast.LENGTH_SHORT).show();
+//                }
             }
         });
         rvItems.setAdapter(adapter);
@@ -177,22 +184,43 @@ public class HomepageFragment extends Fragment {
 
     }
 
-    private void setupSearch() {
-        //Todo:de refacut cu intent https://developers.google.com/places/android-sdk/autocomplete#option_2_use_an_intent_to_launch_the_autocomplete_activity
-        final int AUTOCOMPLETE_REQUEST_CODE = 1;
-        String placesApiKey = "AIzaSyCxLXd2mtdZtf7UjTpymS45BWto4JumZ3k";
-        Places.initialize(this.getActivity(), placesApiKey);
-        PlacesClient placesClient = Places.createClient(this.getActivity());
-        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
-        final Intent intent = new Autocomplete.IntentBuilder(
-                AutocompleteActivityMode.FULLSCREEN, fields)
-                .setTypeFilter(TypeFilter.CITIES)
-                .build(this.getActivity());
-        EditText searchBar = getView().findViewById(R.id.et_search_bar);
-        searchBar.setOnClickListener(new View.OnClickListener() {
+//    private void setupSearch() {
+//        //Todo:de refacut cu intent https://developers.google.com/places/android-sdk/autocomplete#option_2_use_an_intent_to_launch_the_autocomplete_activity
+//        final int AUTOCOMPLETE_REQUEST_CODE = 1;
+//        String placesApiKey = "AIzaSyCxLXd2mtdZtf7UjTpymS45BWto4JumZ3k";
+//        Places.initialize(this.getActivity(), placesApiKey);
+//        PlacesClient placesClient = Places.createClient(this.getActivity());
+//        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+//        final Intent intent = new Autocomplete.IntentBuilder(
+//                AutocompleteActivityMode.FULLSCREEN, fields)
+//                .setTypeFilter(TypeFilter.CITIES)
+//                .build(this.getActivity());
+//        EditText searchBar = getView().findViewById(R.id.et_search_bar);
+//        searchBar.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+//            }
+//        });
+//    }
+    private void requestReadLocationPermission() {
+
+        if (ContextCompat.checkSelfPermission(this.getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            ActivityCompat.requestPermissions(this.getActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_ACCESS_LOCATION);
+
+        }
+    }
+    private void configureRequestButton(){
+        Button requestButton = getView().findViewById(R.id.btn_request_location);
+        requestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+                requestReadLocationPermission();
             }
         });
     }
