@@ -112,6 +112,7 @@ public class HomepageFragment extends Fragment {
             @Override
             public void onClick(String os) {
 
+
                 try {
                     FragmentTransaction transection=getFragmentManager().beginTransaction();
                     UpcomingEventsFragment mfragment=new UpcomingEventsFragment();
