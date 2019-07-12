@@ -1,13 +1,7 @@
 package com.example.eventsapp;
 
-import android.content.Intent;
 import android.os.Bundle;
 
-
-import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.api.model.TypeFilter;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.navigation.NavigationView;
 
 import androidx.annotation.NonNull;
@@ -20,8 +14,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import java.util.Arrays;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
@@ -60,19 +52,19 @@ public class MainActivity extends AppCompatActivity {
                 int id = menuItem.getItemId();
                 switch (id) {
                     case R.id.homepage:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomepageFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomepageFragment()).addToBackStack(null).commit();
                         break;
                     case R.id.calendar:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new CalendarFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new CalendarFragment()).addToBackStack(null).commit();
                         break;
                     case R.id.favorites:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FavoritesFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FavoritesFragment()).addToBackStack(null).commit();
                         break;
                     case R.id.feedback:
                         Toast.makeText(MainActivity.this, "Feedback", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.settings:
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SettingsFragment()).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SettingsFragment()).addToBackStack(null).commit();
 
                         break;
                     default:
@@ -105,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
+            getFragmentManager().popBackStackImmediate();
             super.onBackPressed();
         }
     }

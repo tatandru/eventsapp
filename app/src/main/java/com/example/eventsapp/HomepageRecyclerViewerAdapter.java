@@ -19,7 +19,7 @@ class HomepageRecyclerViewAdapter extends RecyclerView.Adapter<HomepageRecyclerV
     @NonNull
     @Override
     public HomepageRecyclerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new HomepageRecyclerViewHolder(inflater.inflate(R.layout.homepage_category_row,parent,false));
+        return new HomepageRecyclerViewHolder(inflater.inflate(R.layout.homepage_category_row, parent, false));
     }
 
     @Override
@@ -32,6 +32,7 @@ class HomepageRecyclerViewAdapter extends RecyclerView.Adapter<HomepageRecyclerV
     public int getItemCount() {
         return 0;
     }
+
     class HomepageRecyclerViewHolder extends RecyclerView.ViewHolder {
         TextView firstCategory;
         TextView secondCategory;

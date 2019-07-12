@@ -1,8 +1,10 @@
 package com.example.eventsapp.adapters;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +25,6 @@ public class CategoriesRVAdapter extends RecyclerView.Adapter<CategoriesRVAdapte
     public void setCategoryClickListener(ItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
-
 
 
     public CategoriesRVAdapter(List<String> items, Context context) {
@@ -68,14 +69,14 @@ public class CategoriesRVAdapter extends RecyclerView.Adapter<CategoriesRVAdapte
     class ItemsViewHolder extends RecyclerView.ViewHolder {
         private final View locationItemRoot;
         private final TextView txtItem;
-    //    private final TextView txtItem2;
+        //    private final TextView txtItem2;
 
 
         ItemsViewHolder(final View itemView) {
             super(itemView);
             this.locationItemRoot = itemView.findViewById(R.id.cl_favoriteItem);
             this.txtItem = itemView.findViewById(R.id.txt_favoriteItemTitle);
-          //  this.txtItem2 = itemView.findViewById(R.id.rv_second_category);
+            //  this.txtItem2 = itemView.findViewById(R.id.rv_second_category);
 
         }
     }
