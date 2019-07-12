@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -13,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import com.example.eventsapp.R;
 
 public class UpcomingEventsFragment extends Fragment {
+    private ImageView imageView;
     private TextView tvTitle;
     @Nullable
     @Override
@@ -26,7 +28,15 @@ public class UpcomingEventsFragment extends Fragment {
 
         tvTitle.setText(String.valueOf(bundle.getString("title")));
        }System.out.println();
-
+        imageView = (ImageView) view.findViewById(R.id.img_filter_logo);
+        imageView.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FilterFragment()).commit();
+            }
+        });
     return view;
     }
 
