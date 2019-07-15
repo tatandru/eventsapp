@@ -1,8 +1,14 @@
 package com.example.eventsapp;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -60,6 +66,7 @@ public class HomepageFragment extends Fragment {
     private ArrayList<String> imgThreeInList;
     private ArrayList<String> imgEventsInList;
     private ArrayList<String> imgUpcomingEventNameList;
+    private String cityName;
 
     @Nullable
     @Override
@@ -79,6 +86,16 @@ public class HomepageFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         setupSearch();
         configureRequestButton();
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                searchBar.setText(place.getName());
+            }
+        }
     }
 
     /**
@@ -244,7 +261,10 @@ public class HomepageFragment extends Fragment {
             ActivityCompat.requestPermissions(this.getActivity(),
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSIONS_REQUEST_ACCESS_LOCATION);
+            addLocation();
 
+        } else {
+            addLocation();
         }
     }
 
@@ -256,17 +276,6 @@ public class HomepageFragment extends Fragment {
                 requestReadLocationPermission();
             }
         });
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
-                Place place = Autocomplete.getPlaceFromIntent(data);
-                searchBar.setText(place.getName());
-            }
-        }
     }
 
     private void retrieveImageOfEvent(String os) {
@@ -285,11 +294,54 @@ public class HomepageFragment extends Fragment {
     }
 
     private boolean printMessage(List img, String os) {
-        if (img.size() < 1) {
-
-            return false;
-        }
-        return true;
+        return img.size() >= 1;
     }
 
+    private void addLocation() {
+        LocationManager locationManager = (LocationManager) this.getActivity().getSystemService(Context.LOCATION_SERVICE);
+        try {
+            if (ContextCompat.checkSelfPermission(this.getActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                LocationListener locationListener = new LocationListener() {
+                    public void onLocationChanged(Location location) {
+                        // Called when a new location is found by the network location provider.
+                        String latitude = Double.toString(location.getLatitude());
+                        String longitude = Double.toString(location.getLongitude());
+                        cityName = processLocation(latitude, longitude);
+                        searchBar.setText(cityName);
+                    }
+
+                    public void onStatusChanged(String provider, int status, Bundle extras) {
+                    }
+
+                    public void onProviderEnabled(String provider) {
+                    }
+
+                    public void onProviderDisabled(String provider) {
+                    }
+                };
+
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+                locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String processLocation(String latitude, String longitude) {
+        List<Address> address;
+        String city = "";
+        Geocoder geocoder = new Geocoder(this.getActivity());
+        try {
+            address = geocoder.getFromLocation(Double.parseDouble(latitude), Double.parseDouble(longitude), 3);
+            city = address.get(0).getLocality();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return city;
+    }
 }
