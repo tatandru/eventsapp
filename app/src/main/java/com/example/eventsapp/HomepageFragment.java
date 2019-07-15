@@ -33,6 +33,7 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
+import java.sql.SQLOutput;
 import java.util.Arrays;
 
 import java.util.ArrayList;
@@ -57,7 +58,8 @@ public class HomepageFragment extends Fragment {
     private EditText searchBar;
     private List<String> subCategories;
     private ArrayList<String> imgThreeInList;
-    private ArrayList<String>  imgEventsInList;
+    private ArrayList<String> imgEventsInList;
+    private ArrayList<String> imgUpcomingEventNameList;
 
     @Nullable
     @Override
@@ -172,6 +174,7 @@ public class HomepageFragment extends Fragment {
                         Bundle bundle = new Bundle();
                         bundle.putString("title", os);
                         bundle.putStringArrayList("img", imgEventsInList);
+                        bundle.putStringArrayList("name_of_event", imgUpcomingEventNameList);
                         eventsFragment.setArguments(bundle); //data being send to SecondFragment
                         transaction.replace(R.id.fragment_container, eventsFragment);
                         transaction.addToBackStack(null);
@@ -179,7 +182,7 @@ public class HomepageFragment extends Fragment {
                     } else {
                         Toast.makeText(getContext(), os + " not found", Toast.LENGTH_SHORT).show();
                     }
-                }catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(getContext(), os, Toast.LENGTH_SHORT).show();
                 }
@@ -254,6 +257,7 @@ public class HomepageFragment extends Fragment {
             }
         });
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -264,23 +268,24 @@ public class HomepageFragment extends Fragment {
             }
         }
     }
-    private void retrieveImageOfEvent(String os)
-    {
-        imgEventsInList=new ArrayList<>();
-        for (int i=0;i<baseRouteEventsBody.getEmbedded().getEventList().size();i++)
-            for(int j=0;j<baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().size();j++)
-                if(os.equals(baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().get(j).getGenre().getEventGenre()))
-                {
+
+    private void retrieveImageOfEvent(String os) {
+        imgEventsInList = new ArrayList<>();
+        imgUpcomingEventNameList = new ArrayList<>();
+        for (int i = 0; i < baseRouteEventsBody.getEmbedded().getEventList().size(); i++)
+            for (int j = 0; j < baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().size(); j++)
+                if (os.equals(baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().get(j).getGenre().getEventGenre())) {
+                    System.out.println(baseRouteEventsBody.getEmbedded().getEventList().get(i).getEventName());
                     imgEventsInList.add(baseRouteEventsBody.getEmbedded().getEventList().get(i).getImgList().get(3).getImageURL());
+                    imgUpcomingEventNameList.add(baseRouteEventsBody.getEmbedded().getEventList().get(i).getEventName());
+
                 }
 
 
-
     }
-    private  boolean printMessage(List img,String os)
-    {
-        if(img.size()<1)
-        {
+
+    private boolean printMessage(List img, String os) {
+        if (img.size() < 1) {
 
             return false;
         }
