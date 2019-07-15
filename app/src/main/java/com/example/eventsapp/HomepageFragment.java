@@ -25,42 +25,37 @@ import com.example.eventsapp.adapters.CategoriesRVAdapter;
 import com.example.eventsapp.retrofitAPI.ApiConstans;
 import com.example.eventsapp.retrofitAPI.BaseRouteEvents;
 import com.example.eventsapp.retrofitAPI.RetrofitClient;
-import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
 import java.util.Arrays;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
 public class HomepageFragment extends Fragment {
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 1;
     private RecyclerView rvItems;
-    private String cityName;
     private RecyclerView.LayoutManager layoutManager;
     private AutocompleteSupportFragment autocomplete;
     private RetrofitClient retrofit;
     private BaseRouteEvents baseRouteEventsBody;
     private CategoriesRVAdapter adapter;
-    private List<String> categoryTitleDataSet;
-    private List<String> urlDateSet;
+    private List<String> subCategoriesMain;
+    private List<String> urlDataSetMain;
     private EditText searchBar;
+    private List<String> subCategories;
     private ArrayList<String> imgThreeInList;
 
     @Nullable
@@ -72,7 +67,7 @@ public class HomepageFragment extends Fragment {
         rvItems = view.findViewById(R.id.rv_categories);
         searchBar = view.findViewById(R.id.et_search_bar);
         loadEvents();
-        setupList();
+
         return view;
     }
 
@@ -110,9 +105,9 @@ public class HomepageFragment extends Fragment {
 
                     for (int j = 0; j < classificationListSize; j++) {
                         String genreEventName = baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().get(j).getGenre().getEventGenre();
-                        if (!eventClassificationList.contains(genreEventName)) {
-                            eventClassificationList.add(genreEventName);
-                        }
+
+                        eventClassificationList.add(genreEventName);
+
                     }
 
                     for (int j = 0; j < imageListSize; j++) {
@@ -125,10 +120,22 @@ public class HomepageFragment extends Fragment {
                 for (int i = 0; i < urlList.size(); i++) {
                     imgThreeInList.add(urlList.get(i).get(3));
                 }
-                System.out.println(eventClassificationList.toString());
+
+
+                subCategories = new ArrayList<>();
+                Log.e("HomepageFragment", "Lista de subcategorii initializata");
+                for (String e : eventClassificationList) {
+                    if (!subCategories.contains(e)) {
+                        subCategories.add(e);
+                        Log.e("HomepageFragment", "Lista de subcategorii se incarca");
+                    }
+                    Log.e("HomepageFragment", "Lista de subcategorii contine elementul ");
+                }
+
+                System.out.println(subCategories.toString());
                 System.out.println(imgThreeInList.toString());
 
-
+                setupList();
             }
 
             @Override
@@ -145,9 +152,10 @@ public class HomepageFragment extends Fragment {
         layoutManager = new GridLayoutManager(getContext(), 2);  // use a grid layout manager with 2 columns
         rvItems.setLayoutManager(layoutManager);
 
+
         generateDataSet();
 
-        adapter = new CategoriesRVAdapter(categoryTitleDataSet, urlDateSet, getContext());
+        adapter = new CategoriesRVAdapter(subCategoriesMain, urlDataSetMain, getContext());
         adapter.setCategoryClickListener(new CategoriesRVAdapter.ItemClickListener() {
             @Override
             public void onClick(String os) {
@@ -176,42 +184,22 @@ public class HomepageFragment extends Fragment {
 
 
     private void generateDataSet() {
-        categoryTitleDataSet = new ArrayList<>();
-        urlDateSet = new ArrayList<>();
+        subCategoriesMain = new ArrayList<>();
+        urlDataSetMain = new ArrayList<>();
+
+        List<String> subCategList = subCategories;
+        List<String> urlList = imgThreeInList;
 
 
-        List<String> categoriesData = new ArrayList<>();
-        List<String> urlData = new ArrayList<>();
-
-
-        categoriesData.add("Sports");
-        categoriesData.add("Music");
-        categoriesData.add("Art & Theatre");
-        categoriesData.add("Family");
-        categoriesData.add("Fairs & Exhibitions");
-        categoriesData.add("Comedy");
-        categoriesData.add("Festivals");
-        categoriesData.add("Clubs");
-
-        urlData.add("https://i.postimg.cc/nhhrwb6B/Sports.png");
-        urlData.add("https://i.postimg.cc/fRqLGqNF/Music.png");
-        urlData.add("https://i.postimg.cc/hGhJhWsc/Art-Theater.png");
-        urlData.add("https://i.postimg.cc/J030S1rc/Family.png");
-        urlData.add("https://i.postimg.cc/Pr4N4rFd/Fairs-Exhibitions.png");
-        urlData.add("https://i.postimg.cc/T2nKKcVL/Comedy.png");
-        urlData.add("https://i.postimg.cc/BQsXH1ph/Festivals.png");
-        urlData.add("https://i.postimg.cc/Kjh49K28/Club.png");
-
-
-        Log.e("TAG", categoriesData.toString());
-        for (String c : categoriesData) {
-            categoryTitleDataSet.add(c);
+        Log.e("TAG", "Lista de subcategorii" + subCategories.toString());
+        for (String e : subCategList) {
+            subCategoriesMain.add(e);
         }
 
 
-        Log.e("TAG", categoriesData.toString());
-        for (String u : urlData) {
-            urlDateSet.add(u);
+        Log.e("TAG", imgThreeInList.toString());
+        for (String e : urlList) {
+            urlDataSetMain.add(e);
         }
 
 
