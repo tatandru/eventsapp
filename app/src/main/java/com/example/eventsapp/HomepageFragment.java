@@ -25,11 +25,13 @@ import com.example.eventsapp.adapters.CategoriesRVAdapter;
 import com.example.eventsapp.retrofitAPI.ApiConstans;
 import com.example.eventsapp.retrofitAPI.BaseRouteEvents;
 import com.example.eventsapp.retrofitAPI.RetrofitClient;
+import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
@@ -44,10 +46,13 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
+
 public class HomepageFragment extends Fragment {
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_LOCATION = 1;
     private RecyclerView rvItems;
-
+    private String cityName;
     private RecyclerView.LayoutManager layoutManager;
     private AutocompleteSupportFragment autocomplete;
     private RetrofitClient retrofit;
@@ -55,7 +60,7 @@ public class HomepageFragment extends Fragment {
     private CategoriesRVAdapter adapter;
     private List<String> categoryTitleDataSet;
     private List<String> urlDateSet;
-
+    private EditText searchBar;
 
     @Nullable
     @Override
@@ -64,6 +69,7 @@ public class HomepageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_homepage, container, false);
         retrofit = RetrofitClient.getInstance();
         rvItems = view.findViewById(R.id.rv_categories);
+        searchBar = view.findViewById(R.id.et_search_bar);
         loadEvents();
         setupList();
         return view;
@@ -72,7 +78,7 @@ public class HomepageFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        //setupSearch();
+        setupSearch();
         configureRequestButton();
     }
 
@@ -119,22 +125,23 @@ public class HomepageFragment extends Fragment {
             @Override
             public void onClick(String os) {
 
-                Toast.makeText(getActivity(), "Coming soon", Toast.LENGTH_SHORT).show();
-//                try {
-//                    FragmentTransaction transaction=getFragmentManager().beginTransaction();
-//                    UpcomingEventsFragment eventsFragment=new UpcomingEventsFragment();
-//
-//
-//
-//                    Bundle bundle=new Bundle();
-//                    bundle.putString("title",os);
-//                    eventsFragment.setArguments(bundle); //data being send to SecondFragment
-//                    transaction.replace(R.id.fragment_container, eventsFragment);
-//                    transaction.commit();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    Toast.makeText(getContext(), os, Toast.LENGTH_SHORT).show();
-//                }
+                //Toast.makeText(getActivity(), "Coming soon", Toast.LENGTH_SHORT).show();
+                try {
+                    FragmentTransaction transaction=getFragmentManager().beginTransaction();
+                    UpcomingEventsFragment eventsFragment=new UpcomingEventsFragment();
+
+
+
+                    Bundle bundle=new Bundle();
+                    bundle.putString("title",os);
+                    eventsFragment.setArguments(bundle); //data being send to SecondFragment
+                    transaction.replace(R.id.fragment_container, eventsFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), os, Toast.LENGTH_SHORT).show();
+                }
             }
         });
         rvItems.setAdapter(adapter);
@@ -184,25 +191,25 @@ public class HomepageFragment extends Fragment {
 
     }
 
-//    private void setupSearch() {
-//        //Todo:de refacut cu intent https://developers.google.com/places/android-sdk/autocomplete#option_2_use_an_intent_to_launch_the_autocomplete_activity
-//        final int AUTOCOMPLETE_REQUEST_CODE = 1;
-//        String placesApiKey = "AIzaSyCxLXd2mtdZtf7UjTpymS45BWto4JumZ3k";
-//        Places.initialize(this.getActivity(), placesApiKey);
-//        PlacesClient placesClient = Places.createClient(this.getActivity());
-//        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
-//        final Intent intent = new Autocomplete.IntentBuilder(
-//                AutocompleteActivityMode.FULLSCREEN, fields)
-//                .setTypeFilter(TypeFilter.CITIES)
-//                .build(this.getActivity());
-//        EditText searchBar = getView().findViewById(R.id.et_search_bar);
-//        searchBar.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
-//            }
-//        });
-//    }
+    private void setupSearch() {
+        //Todo:de refacut cu intent https://developers.google.com/places/android-sdk/autocomplete#option_2_use_an_intent_to_launch_the_autocomplete_activity
+        final int AUTOCOMPLETE_REQUEST_CODE = 1;
+        String placesApiKey = "AIzaSyCxLXd2mtdZtf7UjTpymS45BWto4JumZ3k";
+        Places.initialize(this.getActivity(), placesApiKey);
+        PlacesClient placesClient = Places.createClient(this.getActivity());
+        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+        final Intent intent = new Autocomplete.IntentBuilder(
+                AutocompleteActivityMode.FULLSCREEN, fields)
+                .setTypeFilter(TypeFilter.CITIES)
+                .build(this.getActivity());
+        searchBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivityForResult(intent,AUTOCOMPLETE_REQUEST_CODE);
+
+            }
+        });
+    }
     private void requestReadLocationPermission() {
 
         if (ContextCompat.checkSelfPermission(this.getActivity(),
@@ -225,4 +232,14 @@ public class HomepageFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                searchBar.setText(place.getName());
+            }
+        }
+    }
 }
