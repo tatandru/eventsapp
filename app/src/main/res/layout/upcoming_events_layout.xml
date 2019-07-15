@@ -52,6 +52,7 @@
         app:layout_constraintTop_toTopOf="@+id/guideline17" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_events_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
