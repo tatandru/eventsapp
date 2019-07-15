@@ -167,13 +167,19 @@ public class HomepageFragment extends Fragment {
                     UpcomingEventsFragment eventsFragment = new UpcomingEventsFragment();
 
 
-                    Bundle bundle = new Bundle();
-                    bundle.putString("title", os);
-                    eventsFragment.setArguments(bundle); //data being send to SecondFragment
-                    transaction.replace(R.id.fragment_container, eventsFragment);
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                } catch (Exception e) {
+                    retrieveImageOfEvent(os);
+                    if (printMessage(imgEventsInList, os)) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("title", os);
+                        bundle.putStringArrayList("img", imgEventsInList);
+                        eventsFragment.setArguments(bundle); //data being send to SecondFragment
+                        transaction.replace(R.id.fragment_container, eventsFragment);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+                    } else {
+                        Toast.makeText(getContext(), os + " not found", Toast.LENGTH_SHORT).show();
+                    }
+                }catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(getContext(), os, Toast.LENGTH_SHORT).show();
                 }
@@ -248,29 +254,6 @@ public class HomepageFragment extends Fragment {
             }
         });
     }
-    private void retrieveImageOfEvent(String os)
-    {
-        imgEventsInList=new ArrayList<>();
-        for (int i=0;i<baseRouteEventsBody.getEmbedded().getEventList().size();i++)
-            for(int j=0;j<baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().size();j++)
-                if(os.equals(baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().get(j).getGenre().getEventGenre()))
-                {
-                    imgEventsInList.add(baseRouteEventsBody.getEmbedded().getEventList().get(i).getImgList().get(3).getImageURL());
-                }
-
-
-
-    }
-    private  boolean printMessage(List img,String os)
-    {
-        if(img.size()<1)
-        {
-
-            return false;
-        }
-        return true;
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
