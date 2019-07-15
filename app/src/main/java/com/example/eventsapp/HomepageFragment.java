@@ -61,6 +61,7 @@ public class HomepageFragment extends Fragment {
     private List<String> categoryTitleDataSet;
     private List<String> urlDateSet;
     private EditText searchBar;
+    private ArrayList<String> imgThreeInList;
 
     @Nullable
     @Override
@@ -95,12 +96,38 @@ public class HomepageFragment extends Fragment {
 
                 baseRouteEventsBody = response.body();
 
-                for (int i = 0; i < baseRouteEventsBody.getEmbedded().getEventList().size(); i++) {
-                    System.out.println("------>" +
-                            baseRouteEventsBody.getEmbedded().getEventList().get(i));
-                    System.out.println();
+                int eventListSize = baseRouteEventsBody.getEmbedded().getEventList().size();
+                List<String> eventClassificationList = new ArrayList<>();
+                List<List<String>> urlList = new ArrayList<>();
 
+
+                for (int i = 0; i < eventListSize; i++) {
+                    int classificationListSize = baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().size();
+                    int imageListSize = baseRouteEventsBody.getEmbedded().getEventList().get(i).getImgList().size();
+                    List<String> imageList = new ArrayList<>();
+                    System.out.println("------>" + baseRouteEventsBody.getEmbedded().getEventList().get(i));
+
+
+                    for (int j = 0; j < classificationListSize; j++) {
+                        String genreEventName = baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().get(j).getGenre().getEventGenre();
+                        if (!eventClassificationList.contains(genreEventName)) {
+                            eventClassificationList.add(genreEventName);
+                        }
+                    }
+
+                    for (int j = 0; j < imageListSize; j++) {
+                        String url = baseRouteEventsBody.getEmbedded().getEventList().get(i).getImgList().get(j).getImageURL();
+                        imageList.add(url);
+                    }
+                    urlList.add(imageList);
                 }
+                imgThreeInList = new ArrayList<>();
+                for (int i = 0; i < urlList.size(); i++) {
+                    imgThreeInList.add(urlList.get(i).get(3));
+                }
+                System.out.println(eventClassificationList.toString());
+                System.out.println(imgThreeInList.toString());
+
 
             }
 
@@ -127,13 +154,12 @@ public class HomepageFragment extends Fragment {
 
                 //Toast.makeText(getActivity(), "Coming soon", Toast.LENGTH_SHORT).show();
                 try {
-                    FragmentTransaction transaction=getFragmentManager().beginTransaction();
-                    UpcomingEventsFragment eventsFragment=new UpcomingEventsFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    UpcomingEventsFragment eventsFragment = new UpcomingEventsFragment();
 
 
-
-                    Bundle bundle=new Bundle();
-                    bundle.putString("title",os);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("title", os);
                     eventsFragment.setArguments(bundle); //data being send to SecondFragment
                     transaction.replace(R.id.fragment_container, eventsFragment);
                     transaction.addToBackStack(null);
@@ -205,11 +231,12 @@ public class HomepageFragment extends Fragment {
         searchBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivityForResult(intent,AUTOCOMPLETE_REQUEST_CODE);
+                startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
 
             }
         });
     }
+
     private void requestReadLocationPermission() {
 
         if (ContextCompat.checkSelfPermission(this.getActivity(),
@@ -222,7 +249,8 @@ public class HomepageFragment extends Fragment {
 
         }
     }
-    private void configureRequestButton(){
+
+    private void configureRequestButton() {
         Button requestButton = getView().findViewById(R.id.btn_request_location);
         requestButton.setOnClickListener(new View.OnClickListener() {
             @Override
