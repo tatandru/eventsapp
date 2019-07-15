@@ -9,8 +9,12 @@ public class Classfication implements Serializable {
     @SerializedName("segment")
     private Segment segment;
 
-    public Classfication(Segment segment) {
+    @SerializedName("genre")
+    private Genre genre;
+
+    public Classfication(Segment segment, Genre genre) {
         this.segment = segment;
+        this.genre = genre;
     }
 
     /**
@@ -25,10 +29,19 @@ public class Classfication implements Serializable {
         this.segment = segment;
     }
 
+    public Genre getGenre() {
+        return genre;
+    }
+
+    public void setGenre(Genre genre) {
+        this.genre = genre;
+    }
+
     @Override
     public String toString() {
         return "Classfication{" +
                 "segment=" + segment +
+                ", genre=" + genre +
                 '}';
     }
 }
