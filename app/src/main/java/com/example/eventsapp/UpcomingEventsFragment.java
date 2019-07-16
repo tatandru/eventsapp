@@ -20,7 +20,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventsapp.R;
 import com.example.eventsapp.adapters.CategoriesRVAdapter;
 import com.example.eventsapp.adapters.EventsListRVAdapter;
+import com.example.eventsapp.retrofitAPI.Embedded;
+import com.example.eventsapp.retrofitAPI.Event;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,6 +41,8 @@ public class UpcomingEventsFragment extends Fragment {
     private List<String> urlDateSet;
     private List<String> urlRetrieveFromServer;
     private List<String> nameOfEventRetrieveFromServer;
+    private ArrayList<Event> mainList;
+    private Embedded embedded;
 
     @Nullable
     @Override
@@ -49,9 +56,21 @@ public class UpcomingEventsFragment extends Fragment {
         if (bundle != null) {
             urlRetrieveFromServer = new ArrayList<>();
             nameOfEventRetrieveFromServer = new ArrayList<>();
+            mainList=new ArrayList<>();
             urlRetrieveFromServer = bundle.getStringArrayList("img");
             nameOfEventRetrieveFromServer = bundle.getStringArrayList("name_of_event");
+            try {
+                embedded = (Embedded) bytes2Object(bundle.getByteArray("As"));
+                System.out.println(embedded.toString());
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
 
+            System.out.println("DSadsa->>>>>>>"+embedded.toString());
             tvTitle.setText(String.valueOf(bundle.getString("title")));
 
         }
@@ -61,7 +80,7 @@ public class UpcomingEventsFragment extends Fragment {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FilterFragment()).addToBackStack(null).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FilterFragment()).commit();
 
             }
         });
@@ -81,8 +100,21 @@ public class UpcomingEventsFragment extends Fragment {
 
 
                 try {
-               
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new EventFragment()).addToBackStack(null).commit();
+                    System.out.println("WORKED" +
+                            "sadsadsadasdas");
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    EventFragment eventsFragment = new EventFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("title", os);
+
+
+                    //   bundle.putString("img", imgEventsInList);
+                    //  bundle.putStringArrayList("name_of_event", imgUpcomingEventNameList);
+                    eventsFragment.setArguments(bundle); //data being send to SecondFragment
+                    transaction.replace(R.id.fragment_container, eventsFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(getContext(), os, Toast.LENGTH_SHORT).show();
@@ -103,5 +135,12 @@ public class UpcomingEventsFragment extends Fragment {
         urlDateSet.addAll(urlRetrieveFromServer);
 
 
+    }
+    static public Object bytes2Object( byte raw[] )
+            throws IOException, ClassNotFoundException {
+        ByteArrayInputStream bais = new ByteArrayInputStream( raw );
+        ObjectInputStream ois = new ObjectInputStream( bais );
+        Object o = ois.readObject();
+        return o;
     }
 }
