@@ -81,8 +81,8 @@ public class UpcomingEventsFragment extends Fragment {
 
 
                 try {
-                    System.out.println("WORKED" +
-                            "sadsadsadasdas");
+               
+                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new EventFragment()).addToBackStack(null).commit();
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(getContext(), os, Toast.LENGTH_SHORT).show();
