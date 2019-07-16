@@ -20,7 +20,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventsapp.R;
 import com.example.eventsapp.adapters.CategoriesRVAdapter;
 import com.example.eventsapp.adapters.EventsListRVAdapter;
+import com.example.eventsapp.retrofitAPI.Embedded;
+import com.example.eventsapp.retrofitAPI.Event;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,6 +41,10 @@ public class UpcomingEventsFragment extends Fragment {
     private List<String> urlDateSet;
     private List<String> urlRetrieveFromServer;
     private List<String> nameOfEventRetrieveFromServer;
+    private Embedded embedded;
+    private String imageEvent;
+    private String startDate;
+    private String endDate;
 
     @Nullable
     @Override
@@ -51,7 +60,18 @@ public class UpcomingEventsFragment extends Fragment {
             nameOfEventRetrieveFromServer = new ArrayList<>();
             urlRetrieveFromServer = bundle.getStringArrayList("img");
             nameOfEventRetrieveFromServer = bundle.getStringArrayList("name_of_event");
+            try {
+                embedded = (Embedded) bytes2Object(bundle.getByteArray("As"));
+                System.out.println(embedded.toString());
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
 
+            System.out.println("DSadsa->>>>>>>"+embedded.toString());
             tvTitle.setText(String.valueOf(bundle.getString("title")));
 
         }
@@ -83,6 +103,21 @@ public class UpcomingEventsFragment extends Fragment {
                 try {
                     System.out.println("WORKED" +
                             "sadsadsadasdas");
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    EventFragment eventsFragment = new EventFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("title", os);
+
+                    retrieveImageOfEvent(os);
+                    //   bundle.putString("img", imgEventsInList);
+                    //  bundle.putStringArrayList("name_of_event", imgUpcomingEventNameList);
+                    bundle.putString("startDate", startDate);
+                    bundle.putString("imageEvent", imageEvent);
+                    eventsFragment.setArguments(bundle); //data being send to SecondFragment
+                    transaction.replace(R.id.fragment_container, eventsFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(getContext(), os, Toast.LENGTH_SHORT).show();
@@ -103,5 +138,23 @@ public class UpcomingEventsFragment extends Fragment {
         urlDateSet.addAll(urlRetrieveFromServer);
 
 
+    }
+    private void retrieveImageOfEvent(String os) {
+
+        for (int i = 0; i < embedded.getEventList().size(); i++)
+                if (os.equals(embedded.getEventList().get(i).getEventName())) {
+                    imageEvent=embedded.getEventList().get(i).getImgList().get(3).getImageURL();
+                    startDate=embedded.getEventList().get(i).getDates().getStartDate().getDayStartEvent();
+                    System.out.println("->>>>>>>>"+imageEvent);
+                }
+
+
+    }
+    static public Object bytes2Object( byte raw[] )
+            throws IOException, ClassNotFoundException {
+        ByteArrayInputStream bais = new ByteArrayInputStream( raw );
+        ObjectInputStream ois = new ObjectInputStream( bais );
+        Object o = ois.readObject();
+        return o;
     }
 }

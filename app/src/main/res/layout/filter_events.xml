@@ -52,7 +52,7 @@
         android:textColor="@color/whiteMain"
         android:textSize="@dimen/text_size"
         app:layout_constraintBottom_toTopOf="@+id/guideline18"
-        app:layout_constraintEnd_toStartOf="@+id/seekBar"
+        app:layout_constraintEnd_toStartOf="@+id/seekBar_price"
         app:layout_constraintStart_toStartOf="@+id/guideline16" />
 
     <TextView
