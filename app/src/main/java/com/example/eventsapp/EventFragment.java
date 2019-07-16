@@ -23,7 +23,7 @@ public class EventFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view= inflater.inflate(R.layout.event_details,container,false);
         Bundle bundle = getArguments();
-        imageView=view.findViewById(R.id.img_event);
+        imageView=view.findViewById(R.id.imageView);
         tv_event_name=view.findViewById(R.id.tv_description);
         tv_start_date=view.findViewById(R.id.tv_start_data);
         if(bundle!=null)
