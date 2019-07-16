@@ -5,7 +5,7 @@
 
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary">
+    android:background="@color/colorPrimaryDark">
 
     <TextView
         android:id="@+id/tv_title_upcoming_events"
@@ -27,6 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/img_filter_logo"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"></SearchView>
 
@@ -45,7 +47,7 @@
         android:id="@+id/img_filter_logo"
         android:layout_width="38dp"
         android:layout_height="39dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:src="@drawable/ic_filter"
         app:layout_constraintEnd_toEndOf="parent"

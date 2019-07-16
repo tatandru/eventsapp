@@ -13,6 +13,9 @@ public class Embedded implements Serializable {
     public Embedded(List<Event> eventList) {
         this.eventList = eventList;
     }
+    public Embedded() {
+
+    }
 
 
     /**
