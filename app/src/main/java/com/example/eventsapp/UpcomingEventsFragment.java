@@ -41,8 +41,10 @@ public class UpcomingEventsFragment extends Fragment {
     private List<String> urlDateSet;
     private List<String> urlRetrieveFromServer;
     private List<String> nameOfEventRetrieveFromServer;
-    private ArrayList<Event> mainList;
     private Embedded embedded;
+    private String imageEvent;
+    private String startDate;
+    private String endDate;
 
     @Nullable
     @Override
@@ -56,7 +58,6 @@ public class UpcomingEventsFragment extends Fragment {
         if (bundle != null) {
             urlRetrieveFromServer = new ArrayList<>();
             nameOfEventRetrieveFromServer = new ArrayList<>();
-            mainList=new ArrayList<>();
             urlRetrieveFromServer = bundle.getStringArrayList("img");
             nameOfEventRetrieveFromServer = bundle.getStringArrayList("name_of_event");
             try {
@@ -80,7 +81,7 @@ public class UpcomingEventsFragment extends Fragment {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FilterFragment()).commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FilterFragment()).addToBackStack(null).commit();
 
             }
         });
@@ -107,9 +108,11 @@ public class UpcomingEventsFragment extends Fragment {
                     Bundle bundle = new Bundle();
                     bundle.putString("title", os);
 
-
+                    retrieveImageOfEvent(os);
                     //   bundle.putString("img", imgEventsInList);
                     //  bundle.putStringArrayList("name_of_event", imgUpcomingEventNameList);
+                    bundle.putString("startDate", startDate);
+                    bundle.putString("imageEvent", imageEvent);
                     eventsFragment.setArguments(bundle); //data being send to SecondFragment
                     transaction.replace(R.id.fragment_container, eventsFragment);
                     transaction.addToBackStack(null);
@@ -133,6 +136,17 @@ public class UpcomingEventsFragment extends Fragment {
         System.out.println(nameOfEventRetrieveFromServer);
         eventTitleDataSet.addAll(nameOfEventRetrieveFromServer);
         urlDateSet.addAll(urlRetrieveFromServer);
+
+
+    }
+    private void retrieveImageOfEvent(String os) {
+
+        for (int i = 0; i < embedded.getEventList().size(); i++)
+                if (os.equals(embedded.getEventList().get(i).getEventName())) {
+                    imageEvent=embedded.getEventList().get(i).getImgList().get(3).getImageURL();
+                    startDate=embedded.getEventList().get(i).getDates().getStartDate().getDayStartEvent();
+                    System.out.println("->>>>>>>>"+imageEvent);
+                }
 
 
     }
