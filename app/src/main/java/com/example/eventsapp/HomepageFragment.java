@@ -1,8 +1,14 @@
 package com.example.eventsapp;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,7 +31,6 @@ import com.example.eventsapp.adapters.CategoriesRVAdapter;
 import com.example.eventsapp.retrofitAPI.ApiConstans;
 import com.example.eventsapp.retrofitAPI.BaseRouteEvents;
 import com.example.eventsapp.retrofitAPI.Embedded;
-import com.example.eventsapp.retrofitAPI.Event;
 import com.example.eventsapp.retrofitAPI.RetrofitClient;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -65,10 +70,8 @@ public class HomepageFragment extends Fragment {
     private ArrayList<String> imgThreeInList;
     private ArrayList<String> imgEventsInList;
     private ArrayList<String> imgUpcomingEventNameList;
-
-    private Embedded embedded;
-
     private String cityName;
+    private Embedded embedded;
 
     @Nullable
     @Override
@@ -90,6 +93,16 @@ public class HomepageFragment extends Fragment {
         configureRequestButton();
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                searchBar.setText(place.getName());
+            }
+        }
+    }
+
     /**
      * Load Events From BaseRouteEvents
      */
@@ -102,14 +115,17 @@ public class HomepageFragment extends Fragment {
             public void onResponse(Call<BaseRouteEvents> call, Response<BaseRouteEvents> response) {
 
                 baseRouteEventsBody = response.body();
-                embedded=baseRouteEventsBody.getEmbedded();
+
+                embedded = baseRouteEventsBody.getEmbedded();
+
                 int eventListSize = baseRouteEventsBody.getEmbedded().getEventList().size();
+                int classificationListSize;
                 List<String> eventClassificationList = new ArrayList<>();
                 List<List<String>> urlList = new ArrayList<>();
 
 
                 for (int i = 0; i < eventListSize; i++) {
-                    int classificationListSize = baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().size();
+                    classificationListSize = baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().size();
                     int imageListSize = baseRouteEventsBody.getEmbedded().getEventList().get(i).getImgList().size();
                     List<String> imageList = new ArrayList<>();
                     System.out.println("------>" + baseRouteEventsBody.getEmbedded().getEventList().get(i));
@@ -128,22 +144,26 @@ public class HomepageFragment extends Fragment {
                     }
                     urlList.add(imageList);
                 }
+
                 imgThreeInList = new ArrayList<>();
-                for (int i = 0; i < urlList.size(); i++) {
-                    imgThreeInList.add(urlList.get(i).get(3));
-                }
-
-
                 subCategories = new ArrayList<>();
-                Log.e("HomepageFragment", "Lista de subcategorii initializata");
-                for (String e : eventClassificationList) {
-                    if (!subCategories.contains(e)) {
-                        subCategories.add(e);
-                        Log.e("HomepageFragment", "Lista de subcategorii se incarca");
-                    }
-                    Log.e("HomepageFragment", "Lista de subcategorii contine elementul ");
-                }
 
+                for (int i = 0; i < eventListSize; i++) {
+
+
+                    for (int j = 0; j < baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().size(); j++) {
+
+                        String e = baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().get(j).getGenre().getEventGenre();
+
+                        if (!subCategories.contains(e)) {
+                            subCategories.add(e);
+                            imgThreeInList.add(urlList.get(i).get(3));
+                            Log.e("HomepageFragment", "Lista de subcategorii se incarca");
+                        }
+                        Log.e("HomepageFragment", "Lista de subcategorii contine elementul ");
+                    }
+
+                }
                 System.out.println(subCategories.toString());
                 System.out.println(imgThreeInList.toString());
 
@@ -180,12 +200,11 @@ public class HomepageFragment extends Fragment {
 
                     retrieveImageOfEvent(os);
                     if (printMessage(imgEventsInList, os)) {
-
                         Bundle bundle = new Bundle();
-                        bundle.putByteArray("As",object2Bytes(embedded));
+
+                        bundle.putByteArray("As", object2Bytes(embedded));
                         bundle.putString("title", os);
                         bundle.putStringArrayList("img", imgEventsInList);
-
                         bundle.putStringArrayList("name_of_event", imgUpcomingEventNameList);
                         eventsFragment.setArguments(bundle); //data being send to SecondFragment
                         transaction.replace(R.id.fragment_container, eventsFragment);
@@ -204,12 +223,15 @@ public class HomepageFragment extends Fragment {
 
     }
 
-    static public byte[] object2Bytes( Object o ) throws IOException {
+
+    static public byte[] object2Bytes(Object o) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream( baos );
-        oos.writeObject( o );
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(o);
         return baos.toByteArray();
     }
+
+
     private void generateDataSet() {
         subCategoriesMain = new ArrayList<>();
         urlDataSetMain = new ArrayList<>();
@@ -261,7 +283,10 @@ public class HomepageFragment extends Fragment {
             ActivityCompat.requestPermissions(this.getActivity(),
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSIONS_REQUEST_ACCESS_LOCATION);
+            addLocation();
 
+        } else {
+            addLocation();
         }
     }
 
@@ -273,17 +298,6 @@ public class HomepageFragment extends Fragment {
                 requestReadLocationPermission();
             }
         });
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
-                Place place = Autocomplete.getPlaceFromIntent(data);
-                searchBar.setText(place.getName());
-            }
-        }
     }
 
     private void retrieveImageOfEvent(String os) {
@@ -302,11 +316,54 @@ public class HomepageFragment extends Fragment {
     }
 
     private boolean printMessage(List img, String os) {
-        if (img.size() < 1) {
-
-            return false;
-        }
-        return true;
+        return img.size() >= 1;
     }
 
+    private void addLocation() {
+        LocationManager locationManager = (LocationManager) this.getActivity().getSystemService(Context.LOCATION_SERVICE);
+        try {
+            if (ContextCompat.checkSelfPermission(this.getActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
+                LocationListener locationListener = new LocationListener() {
+                    public void onLocationChanged(Location location) {
+                        // Called when a new location is found by the network location provider.
+                        String latitude = Double.toString(location.getLatitude());
+                        String longitude = Double.toString(location.getLongitude());
+                        cityName = processLocation(latitude, longitude);
+                        searchBar.setText(cityName);
+                    }
+
+                    public void onStatusChanged(String provider, int status, Bundle extras) {
+                    }
+
+                    public void onProviderEnabled(String provider) {
+                    }
+
+                    public void onProviderDisabled(String provider) {
+                    }
+                };
+
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+                locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String processLocation(String latitude, String longitude) {
+        List<Address> address;
+        String city = "";
+        Geocoder geocoder = new Geocoder(this.getActivity());
+        try {
+            address = geocoder.getFromLocation(Double.parseDouble(latitude), Double.parseDouble(longitude), 3);
+            city = address.get(0).getLocality();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return city;
+    }
 }
