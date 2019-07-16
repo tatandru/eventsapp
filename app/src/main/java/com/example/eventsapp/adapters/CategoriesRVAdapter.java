@@ -1,9 +1,13 @@
 package com.example.eventsapp.adapters;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.example.eventsapp.R;
 
 import java.util.ArrayList;
@@ -30,8 +36,7 @@ public class CategoriesRVAdapter extends RecyclerView.Adapter<CategoriesRVAdapte
     }
 
 
-
-    public CategoriesRVAdapter(List<String> items,List<String> urlImages, Context context) {
+    public CategoriesRVAdapter(List<String> items, List<String> urlImages, Context context) {
         this.categoriesList = new ArrayList<>(2);
         this.urlImagesList = new ArrayList<>(2);
         this.categoriesList = items;
@@ -51,15 +56,26 @@ public class CategoriesRVAdapter extends RecyclerView.Adapter<CategoriesRVAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemsViewHolder citiesViewHolder, int i) {
+    public void onBindViewHolder(@NonNull final ItemsViewHolder citiesViewHolder, int i) {
 
         final String item = this.categoriesList.get(i);
         final String url = this.urlImagesList.get(i);
 
         citiesViewHolder.txtItem.setText(item);
 
-        Glide.with(context).load(url).into(citiesViewHolder.categoryIcon);
+        Glide.with(context)
+                .asBitmap()
+                .load(url)
+                .into(new CustomTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
+                        citiesViewHolder.categoryIcon.setImageBitmap(resource);
+                    }
 
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                    }
+                });
 
         citiesViewHolder.locationItemRoot.setOnClickListener(new View.OnClickListener() {
             @Override

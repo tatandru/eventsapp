@@ -5,5 +5,7 @@
     <dimen name="marginNormal">8dp</dimen>
 
     <!--Text size-->
-    <dimen name="txtTitle">30dp</dimen>
+    <dimen name="txtTitle">24dp</dimen>
+    <dimen name="txtNormal">16dp</dimen>
+    <dimen name="txtSmall">8dp</dimen>
 </resources>
