@@ -112,12 +112,13 @@ public class HomepageFragment extends Fragment {
                 baseRouteEventsBody = response.body();
 
                 int eventListSize = baseRouteEventsBody.getEmbedded().getEventList().size();
+                int classificationListSize;
                 List<String> eventClassificationList = new ArrayList<>();
                 List<List<String>> urlList = new ArrayList<>();
 
 
                 for (int i = 0; i < eventListSize; i++) {
-                    int classificationListSize = baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().size();
+                    classificationListSize = baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().size();
                     int imageListSize = baseRouteEventsBody.getEmbedded().getEventList().get(i).getImgList().size();
                     List<String> imageList = new ArrayList<>();
                     System.out.println("------>" + baseRouteEventsBody.getEmbedded().getEventList().get(i));
@@ -136,20 +137,25 @@ public class HomepageFragment extends Fragment {
                     }
                     urlList.add(imageList);
                 }
-                imgThreeInList = new ArrayList<>();
-                for (int i = 0; i < urlList.size(); i++) {
-                    imgThreeInList.add(urlList.get(i).get(3));
-                }
-
 
                 subCategories = new ArrayList<>();
+                imgThreeInList = new ArrayList<>();
+
                 Log.e("HomepageFragment", "Lista de subcategorii initializata");
-                for (String e : eventClassificationList) {
-                    if (!subCategories.contains(e)) {
-                        subCategories.add(e);
-                        Log.e("HomepageFragment", "Lista de subcategorii se incarca");
+                for (int i = 0; i < eventListSize; i++) {
+
+                    for (int j = 0; j < baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().size(); j++) {
+
+                        String e = baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().get(j).getGenre().getEventGenre();
+
+                        if (!subCategories.contains(e)) {
+                            subCategories.add(e);
+                            imgThreeInList.add(urlList.get(i).get(3));
+                            Log.e("HomepageFragment", "Lista de subcategorii se incarca");
+                        }
+                        Log.e("HomepageFragment", "Lista de subcategorii contine elementul ");
                     }
-                    Log.e("HomepageFragment", "Lista de subcategorii contine elementul ");
+
                 }
 
                 System.out.println(subCategories.toString());
