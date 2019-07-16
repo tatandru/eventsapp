@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventsapp.adapters.CategoriesRVAdapter;
 import com.example.eventsapp.retrofitAPI.ApiConstans;
 import com.example.eventsapp.retrofitAPI.BaseRouteEvents;
+import com.example.eventsapp.retrofitAPI.Embedded;
 import com.example.eventsapp.retrofitAPI.RetrofitClient;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -39,6 +40,9 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.sql.SQLOutput;
 import java.util.Arrays;
 
@@ -67,6 +71,7 @@ public class HomepageFragment extends Fragment {
     private ArrayList<String> imgEventsInList;
     private ArrayList<String> imgUpcomingEventNameList;
     private String cityName;
+    private Embedded embedded;
 
     @Nullable
     @Override
@@ -111,6 +116,8 @@ public class HomepageFragment extends Fragment {
 
                 baseRouteEventsBody = response.body();
 
+                embedded = baseRouteEventsBody.getEmbedded();
+
                 int eventListSize = baseRouteEventsBody.getEmbedded().getEventList().size();
                 int classificationListSize;
                 List<String> eventClassificationList = new ArrayList<>();
@@ -138,11 +145,11 @@ public class HomepageFragment extends Fragment {
                     urlList.add(imageList);
                 }
 
-                subCategories = new ArrayList<>();
                 imgThreeInList = new ArrayList<>();
+                subCategories = new ArrayList<>();
 
-                Log.e("HomepageFragment", "Lista de subcategorii initializata");
                 for (int i = 0; i < eventListSize; i++) {
+
 
                     for (int j = 0; j < baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().size(); j++) {
 
@@ -157,7 +164,6 @@ public class HomepageFragment extends Fragment {
                     }
 
                 }
-
                 System.out.println(subCategories.toString());
                 System.out.println(imgThreeInList.toString());
 
@@ -195,6 +201,8 @@ public class HomepageFragment extends Fragment {
                     retrieveImageOfEvent(os);
                     if (printMessage(imgEventsInList, os)) {
                         Bundle bundle = new Bundle();
+
+                        bundle.putByteArray("As", object2Bytes(embedded));
                         bundle.putString("title", os);
                         bundle.putStringArrayList("img", imgEventsInList);
                         bundle.putStringArrayList("name_of_event", imgUpcomingEventNameList);
@@ -213,6 +221,14 @@ public class HomepageFragment extends Fragment {
         });
         rvItems.setAdapter(adapter);
 
+    }
+
+
+    static public byte[] object2Bytes(Object o) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(o);
+        return baos.toByteArray();
     }
 
 
