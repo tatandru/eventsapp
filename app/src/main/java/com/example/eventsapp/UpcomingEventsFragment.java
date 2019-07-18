@@ -90,7 +90,6 @@ public class UpcomingEventsFragment extends Fragment {
         System.out.println();
         setupList();
         imageView = (ImageView) view.findViewById(R.id.img_filter_logo);
-        txtIdEvent = view.findViewById(R.id.txt_idEvent);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
