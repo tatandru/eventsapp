@@ -124,7 +124,6 @@ public class UpcomingEventsFragment extends Fragment {
                     favoritesViewModel.getAllEvents();
                     Bundle bundle = new Bundle();
                     bundle.putString("title", os);
-
                     retrieveImageOfEvent(os, event);
                     bundle.putByteArray("event", HomepageFragment.object2Bytes(event));
                     eventsFragment.setArguments(bundle); //data being send to SecondFragment
