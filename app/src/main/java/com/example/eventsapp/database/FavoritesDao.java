@@ -21,7 +21,7 @@ public interface FavoritesDao {
     @Query("Select * from FavoriteEvents")
     LiveData<List<FavoriteEvents>> getAllEvents();
     @Query("Select * from FavoriteEvents where eventName=:eventName")
-    void searchEventByName(String eventName);
+    FavoriteEvents searchEventByName(String eventName);
     @Query("Select * from FavoriteEvents where startDate=:startDate")
-    void searchEventByStartDate(String startDate);
+    FavoriteEvents searchEventByStartDate(String startDate);
 }
