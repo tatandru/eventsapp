@@ -45,7 +45,6 @@ public class EventFragment extends Fragment {
         imageView = view.findViewById(R.id.imageView);
         tv_event_name = view.findViewById(R.id.tv_description);
         tv_start_date = view.findViewById(R.id.tv_start_data);
-        txtIdEvent = view.findViewById(R.id.txt_idEvent);
         if (bundle != null) {
             Glide.with(this.getContext()).load(event.getImgList().get(3).getImageURL()).into(imageView);
             tv_event_name.setText(event.getEventName());
