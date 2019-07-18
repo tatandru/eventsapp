@@ -34,6 +34,7 @@ public class EventFragment extends Fragment {
     private ImageView eventImage;
     private ToggleButton favoriteButton;
     private FavoriteEvents event;
+    private EventsViewModel favoritesViewModel;
 
     @Nullable
     @Override
@@ -44,6 +45,7 @@ public class EventFragment extends Fragment {
         tv_event_name = view.findViewById(R.id.tv_description);
         tv_start_date = view.findViewById(R.id.tv_start_data);
         favoriteButton = view.findViewById(R.id.btn_heart);
+        favoritesViewModel = new EventsViewModel(getActivity().getApplication());
         Bundle bundle = getArguments();
         if (bundle != null) {
             Glide.with(this.getContext()).load(bundle.getString("imageEvent")).into(eventImage);
@@ -60,21 +62,8 @@ public class EventFragment extends Fragment {
         favoriteButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                Bundle bundle = new Bundle();
-                bundle.putString("eventName", event.getEventName());
-                bundle.putString("urlImg", event.getUrlImg());
-                bundle.putString("startDate", event.getStartDate());
-                if (isChecked(favoriteButton)) {
-                    bundle.putBoolean("favorite", true);
-                } else {
-                    bundle.putBoolean("favorite", false);
-                }
-                FavoritesFragment favoritesFragment = new FavoritesFragment();
-                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                favoritesFragment.setArguments(bundle);
-                transaction.replace(R.id.fragment_container, favoritesFragment);
-                transaction.commit();
-                favoriteButton.setChecked(false);
+                if (isChecked(favoriteButton))
+                    favoritesViewModel.insert(event);
             }
         });
     }

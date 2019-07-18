@@ -45,18 +45,4 @@ public class FavoritesFragment extends Fragment {
 
         return view;
     }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        Bundle bundle = this.getArguments();
-        if (bundle != null) {
-            //Glide.with(this.getContext()).load(bundle.getString("imageEvent")).into();
-            String eventName = bundle.getString("eventName");
-            String startDate = bundle.getString("startDate");
-            String urlImg = bundle.getString("urlImg");
-            FavoriteEvents event = new FavoriteEvents(eventName, urlImg, startDate);
-            favoritesViewModel.insert(event);
-        }
-    }
 }

@@ -1,5 +1,6 @@
 package com.example.eventsapp.database;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -8,49 +9,41 @@ import java.io.Serializable;
 
 @Entity
 public class FavoriteEvents implements Serializable {
-    @PrimaryKey(autoGenerate = true)
-    private int id;
-    @ColumnInfo(name = "event_name")
+    @NonNull
+    @PrimaryKey
     private String eventName;
 
-    @ColumnInfo(name = "start_date")
+    @ColumnInfo
     private String startDate;
 
-    @ColumnInfo(name = "end_date")
+    @ColumnInfo
     private String endDate;
 
-    @ColumnInfo(name = "min_price")
+    @ColumnInfo
     private Double minPrice;
 
-    @ColumnInfo(name = "max_price")
+    @ColumnInfo
     private Double maxPrice;
 
-    @ColumnInfo(name = "currency")
+    @ColumnInfo
     private String Currency;
 
-    @ColumnInfo(name = "url_img")
+    @ColumnInfo
     private String urlImg;
 
-    @ColumnInfo(name = "city_name")
+    @ColumnInfo
     private String cityName;
 
-    @ColumnInfo(name = "address")
+    @ColumnInfo
     private String address;
 
-    @ColumnInfo(name = "country")
+    @ColumnInfo
     private String country;
 
-    public FavoriteEvents(String eventName, String urlImg, String startDate){
-        this.eventName=eventName;
-        this.urlImg=urlImg;
-        this.startDate=startDate;
-    }
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public FavoriteEvents(String eventName, String urlImg, String startDate) {
+        this.eventName = eventName;
+        this.urlImg = urlImg;
+        this.startDate = startDate;
     }
 
     public String getEventName() {
