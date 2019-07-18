@@ -12,14 +12,26 @@ public class StartDate implements Serializable {
 
     @SerializedName("localTime")
     private String hourStartEvent;
+    @SerializedName("dateTime")
+    private String dayEndAndTime;
 
-
-    public StartDate(String dayStartEvent, String hourStartEvent) {
+    public StartDate(String dayStartEvent, String hourStartEvent, String dayEndAndTime) {
         this.dayStartEvent = dayStartEvent;
         this.hourStartEvent = hourStartEvent;
+        this.dayEndAndTime = dayEndAndTime;
+    }
+
+    public String getDayEndAndTime() {
+
+        return dayEndAndTime;
+    }
+
+    public void setDayEndAndTime(String dayEndAndTime) {
+        this.dayEndAndTime = dayEndAndTime;
     }
 
     public String getDayStartEvent() {
+
         return dayStartEvent;
     }
 
@@ -43,8 +55,9 @@ public class StartDate implements Serializable {
     @Override
     public String toString() {
         return "StartDate{" +
-                "dayStartEvent=" + dayStartEvent +
+                "dayStartEvent='" + dayStartEvent + '\'' +
                 ", hourStartEvent='" + hourStartEvent + '\'' +
+                ", dayEndAndTime='" + dayEndAndTime + '\'' +
                 '}';
     }
 }
