@@ -51,11 +51,18 @@ public class EventFragment extends Fragment {
         tv_event_name = view.findViewById(R.id.tv_description);
         tv_start_date = view.findViewById(R.id.tv_start_data);
         favoriteButton = view.findViewById(R.id.btn_heart);
+        tv_end_date=view.findViewById(R.id.tv_end_data);
         Glide.with(this.getContext()).load(event.getImgList().get(3).getImageURL()).into(eventImage);
         tv_event_name.setText(event.getEventName());
-        tv_start_date.setText(event.getDates().getStartDate().toString());
+        tv_start_date.setText(event.getDates().getStartDate().getDayStartEvent());
         favoritesViewModel = new EventsViewModel(getActivity().getApplication());
         favoriteEvent = new FavoriteEvents(event.getEventName(), event.getImgList().get(3).getImageURL(), event.getDates().getStartDate().getDayStartEvent());
+        try {
+            tv_end_date.setText(splitAtACharacter(event.getDates().getStartDate().getDayEndAndTime()));
+        }catch (Exception e)
+        {
+            tv_end_date.setText("Date not found");
+        }
         return view;
     }
 
@@ -74,4 +81,10 @@ public class EventFragment extends Fragment {
     private boolean isChecked(View View) {
         return favoriteButton.isChecked();
     }
+    private String splitAtACharacter(String word)
+    {
+        String arrayUseToSplit[]=word.split("T");
+        return arrayUseToSplit[0];
+    }
+
 }
