@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.example.eventsapp.R;
+import com.example.eventsapp.retrofitAPI.Event;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +58,7 @@ public class CategoriesRVAdapter extends RecyclerView.Adapter<CategoriesRVAdapte
 
     @Override
     public void onBindViewHolder(@NonNull final ItemsViewHolder citiesViewHolder, int i) {
+
 
         final String item = this.categoriesList.get(i);
         final String url = this.urlImagesList.get(i);
