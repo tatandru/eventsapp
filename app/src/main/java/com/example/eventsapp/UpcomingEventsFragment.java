@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventsapp.adapters.EventsListRVAdapter;
+import com.example.eventsapp.database.EventsViewModel;
 import com.example.eventsapp.retrofitAPI.Embedded;
 import com.example.eventsapp.retrofitAPI.Event;
 
@@ -119,6 +120,8 @@ public class UpcomingEventsFragment extends Fragment {
                             "sadsadsadasdas");
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     EventFragment eventsFragment = new EventFragment();
+                    EventsViewModel favoritesViewModel = new EventsViewModel(getActivity().getApplication());
+                    favoritesViewModel.getAllEvents();
                     Bundle bundle = new Bundle();
                     bundle.putString("title", os);
 
@@ -131,7 +134,8 @@ public class UpcomingEventsFragment extends Fragment {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(getContext(), os, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ge
+                            tContext(), os, Toast.LENGTH_SHORT).show();
                 }
             }
         });

@@ -1,0 +1,65 @@
+package com.example.eventsapp.adapters;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+import com.example.eventsapp.R;
+import com.example.eventsapp.database.FavoriteEvents;
+
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRecyclerViewAdapter.favoriteViewHolder> {
+    private List<FavoriteEvents> favoriteEvents;
+    private LayoutInflater inflater;
+    private Context context;
+
+    public FavoriteRecyclerViewAdapter(List<FavoriteEvents> favoriteEvents, Context context){
+        this.favoriteEvents=new ArrayList<>(2);
+        this.context=context;
+    }
+    @NonNull
+    @Override
+    public favoriteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View itemView=LayoutInflater.from(parent.getContext()).inflate(R.layout.favorites_row,parent,false);
+        return new favoriteViewHolder(itemView);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull favoriteViewHolder holder, int position) {
+        FavoriteEvents event=favoriteEvents.get(position);
+        holder.title.setText(event.getEventName());
+        Glide.with(context).load(event.getUrlImg()).fitCenter().into(holder.eventImage);
+    }
+
+    @Override
+    public int getItemCount() {
+        return favoriteEvents.size();
+    }
+    public void setFavoriteEvents(List<FavoriteEvents> events){
+        this.favoriteEvents=events;
+        notifyDataSetChanged();
+    }
+
+    class favoriteViewHolder extends RecyclerView.ViewHolder {
+        private final TextView title;
+        private final ImageView eventImage;
+
+
+        favoriteViewHolder(final View itemView) {
+            super(itemView);
+            this.title = itemView.findViewById(R.id.rv_title);
+            this.eventImage = itemView.findViewById(R.id.rv_image);
+
+        }
+    }
+}
