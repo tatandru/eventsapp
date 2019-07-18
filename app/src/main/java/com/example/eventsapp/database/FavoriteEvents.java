@@ -40,9 +40,9 @@ public class FavoriteEvents implements Serializable {
     @ColumnInfo(name = "country")
     private String country;
 
-    FavoriteEvents(String eventName,String cityName,String startDate){
+    public FavoriteEvents(String eventName, String urlImg, String startDate){
         this.eventName=eventName;
-        this.cityName=cityName;
+        this.urlImg=urlImg;
         this.startDate=startDate;
     }
     public int getId() {

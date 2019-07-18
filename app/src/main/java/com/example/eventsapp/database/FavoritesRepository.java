@@ -26,10 +26,10 @@ public class FavoritesRepository {
     public String searchEvent(List<FavoriteEvents> events,String searchedEvent){
         for(int i =0;i<events.size();i++){
             if(events.get(i).getEventName().equals(searchedEvent)){
-                System.out.println(searchedEvent);
+                return searchedEvent;
             }
         }
-        return searchedEvent;
+        return null;
     }
 
     void insertEvent(FavoriteEvents event){

@@ -81,14 +81,15 @@ public class HomepageFragment extends Fragment {
         retrofit = RetrofitClient.getInstance();
         rvItems = view.findViewById(R.id.rv_categories);
         searchBar = view.findViewById(R.id.et_search_bar);
-        loadEvents();
 
+        loadEvents();
         return view;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
         setupSearch();
         configureRequestButton();
     }
@@ -206,7 +207,7 @@ public class HomepageFragment extends Fragment {
                         bundle.putString("title", os);
                         bundle.putStringArrayList("img", imgEventsInList);
                         bundle.putStringArrayList("name_of_event", imgUpcomingEventNameList);
-                        eventsFragment.setArguments(bundle); //data being send to SecondFragment
+                        eventsFragment.setArguments(bundle);//data being send to SecondFragment
                         transaction.replace(R.id.fragment_container, eventsFragment);
                         transaction.addToBackStack(null);
                         transaction.commit();

@@ -11,14 +11,14 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 
 @Database(entities = {FavoriteEvents.class}, version = 1)
 public abstract class FavoritesDatabase extends RoomDatabase {
-    private static String DATABASE_NAME;
+    private static String DATABASE_NAME="asdf";
     private static FavoritesDatabase instance;
 
     public abstract FavoritesDao favoritesDao();
 
     public static synchronized FavoritesDatabase getInstance(Context context) {
         if (instance == null) {
-            instance = Room.databaseBuilder(context, FavoritesDatabase.class, DATABASE_NAME)
+            instance = Room.inMemoryDatabaseBuilder(context, FavoritesDatabase.class)
                     .fallbackToDestructiveMigration()
                     .addCallback(roomCallBack)
                     .build();
@@ -40,8 +40,6 @@ public abstract class FavoritesDatabase extends RoomDatabase {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            //TODO:populez baza de date
-            //favoritesDao.insertEvent();
             return null;
         }
     }
