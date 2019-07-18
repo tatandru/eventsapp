@@ -7,6 +7,8 @@ import java.util.List;
 
 public class Event implements Serializable {
 
+    public  int idEvent;
+
     @SerializedName("name")
     private String eventName;
 
@@ -48,9 +50,26 @@ public class Event implements Serializable {
         this.infoEmbedded = infoEmbedded;
     }
 
-    /**
-     * Getter and Setter
-     */
+    public Event(int idEvent, String eventName, List<Image> imgList, Sales sales, Dates dates, List<Classfication> classficationList,
+                 Promoter promoter, List<PriceRange> priceRangeList, InfoEmbedded infoEmbedded) {
+        this.idEvent = idEvent;
+        this.eventName = eventName;
+        this.imgList = imgList;
+        this.sales = sales;
+        this.dates = dates;
+        this.classficationList = classficationList;
+        this.promoter = promoter;
+        this.priceRangeList = priceRangeList;
+        this.infoEmbedded = infoEmbedded;
+    }
+
+    public int getIdEvent() {
+        return idEvent;
+    }
+
+    public void setIdEvent(int idEvent) {
+        this.idEvent = idEvent;
+    }
 
     public String getEventName() {
         return eventName;
@@ -116,11 +135,16 @@ public class Event implements Serializable {
         this.infoEmbedded = infoEmbedded;
     }
 
+    /**
+     * Getter and Setter
+     */
+
 
     @Override
     public String toString() {
         return "Event{" +
-                "eventName='" + eventName + '\'' +
+                "idEvent=" + idEvent +
+                ", eventName='" + eventName + '\'' +
                 ", imgList=" + imgList +
                 ", sales=" + sales +
                 ", dates=" + dates +
