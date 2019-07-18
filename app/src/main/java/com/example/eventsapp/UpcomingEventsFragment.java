@@ -13,12 +13,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.eventsapp.R;
-import com.example.eventsapp.adapters.CategoriesRVAdapter;
 import com.example.eventsapp.adapters.EventsListRVAdapter;
 import com.example.eventsapp.database.EventsViewModel;
 import com.example.eventsapp.retrofitAPI.Embedded;
@@ -27,9 +24,7 @@ import com.example.eventsapp.retrofitAPI.Event;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.sql.SQLOutput;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class UpcomingEventsFragment extends Fragment {
@@ -41,11 +36,14 @@ public class UpcomingEventsFragment extends Fragment {
     private List<String> eventTitleDataSet;
     private List<String> urlDateSet;
     private List<String> urlRetrieveFromServer;
-    private List<String> nameOfEventRetrieveFromServer;
+    private List<String> nameOfEventRetrieveFromHomePage;
+    private List<Integer> idEventListFromServer;
     private Embedded embedded;
-    private String imageEvent;
-    private String startDate;
-    private String endDate;
+    private Event thisEvent;
+    private List<Integer> idEventsDataSet;
+    private TextView txtIdEvent;
+    private List<Event> eventListRV;
+    private List<Event> eventsFromHomePage;
 
     @Nullable
     @Override
@@ -54,16 +52,24 @@ public class UpcomingEventsFragment extends Fragment {
         tvTitle = view.findViewById(R.id.tv_title_upcoming_events);
         rvItems = view.findViewById(R.id.rv_events_list);
 
+
         Bundle bundle = getArguments();
 
         if (bundle != null) {
             urlRetrieveFromServer = new ArrayList<>();
-            nameOfEventRetrieveFromServer = new ArrayList<>();
+            nameOfEventRetrieveFromHomePage = new ArrayList<>();
+            idEventListFromServer = new ArrayList<>();
+            eventsFromHomePage = new ArrayList<>();
             urlRetrieveFromServer = bundle.getStringArrayList("img");
-            nameOfEventRetrieveFromServer = bundle.getStringArrayList("name_of_event");
+            nameOfEventRetrieveFromHomePage = bundle.getStringArrayList("name_of_event");
+            idEventListFromServer = bundle.getIntegerArrayList("idEvents");
+
+
             try {
                 embedded = (Embedded) bytes2Object(bundle.getByteArray("As"));
-                System.out.println(embedded.toString());
+                eventsFromHomePage = (List<Event>) bytes2Object(bundle.getByteArray("eventListSubcategories"));
+
+                System.out.println(" Events  >>>>" + eventsFromHomePage.toString());
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -72,7 +78,13 @@ public class UpcomingEventsFragment extends Fragment {
                 e.printStackTrace();
             }
 
-            System.out.println("DSadsa->>>>>>>"+embedded.toString());
+
+            for (Event e : eventsFromHomePage) {
+                Log.e("UpcomingEventsFragment", e + "\n");
+            }
+
+
+            System.out.println("DSadsa->>>>>>>" + embedded.toString());
             tvTitle.setText(String.valueOf(bundle.getString("title")));
 
         }
@@ -95,10 +107,12 @@ public class UpcomingEventsFragment extends Fragment {
 
         generateDataSet();
 
-        adapter = new EventsListRVAdapter(eventTitleDataSet, urlDateSet, getContext());
+        Log.e("UpcomingEventsFragment", embedded.getEventList().toString());
+
+        adapter = new EventsListRVAdapter(thisEvent, embedded, eventListRV, eventTitleDataSet, urlDateSet, getContext());
         adapter.setCategoryClickListener(new EventsListRVAdapter.ItemClickListener() {
             @Override
-            public void onClick(String os) {
+            public void onClick(String os, Event event) {
 
 
                 try {
@@ -111,11 +125,8 @@ public class UpcomingEventsFragment extends Fragment {
                     Bundle bundle = new Bundle();
                     bundle.putString("title", os);
 
-                    retrieveImageOfEvent(os);
-                    //   bundle.putString("img", imgEventsInList);
-                    //  bundle.putStringArrayList("name_of_event", imgUpcomingEventNameList);
-                    bundle.putString("startDate", startDate);
-                    bundle.putString("imageEvent", imageEvent);
+                    retrieveImageOfEvent(os, event);
+                    bundle.putByteArray("event", HomepageFragment.object2Bytes(event));
                     eventsFragment.setArguments(bundle); //data being send to SecondFragment
                     transaction.replace(R.id.fragment_container, eventsFragment);
                     transaction.addToBackStack(null);
@@ -129,35 +140,34 @@ public class UpcomingEventsFragment extends Fragment {
             }
         });
         rvItems.setAdapter(adapter);
-
     }
 
 
     private void generateDataSet() {
         eventTitleDataSet = new ArrayList<>();
         urlDateSet = new ArrayList<>();
+        eventListRV = new ArrayList<>();
 
-        System.out.println(nameOfEventRetrieveFromServer);
-        eventTitleDataSet.addAll(nameOfEventRetrieveFromServer);
+        System.out.println(nameOfEventRetrieveFromHomePage);
+        eventTitleDataSet.addAll(nameOfEventRetrieveFromHomePage);
         urlDateSet.addAll(urlRetrieveFromServer);
+        eventListRV.addAll(eventsFromHomePage);
+        Log.e("UpcomingEventsFragment", eventListRV.toString());
+
+    }
+
+    private void retrieveImageOfEvent(String eventName, Event event) {
+
+
+        Log.e("UpcomingEventsFragment", event.toString());
 
 
     }
-    private void retrieveImageOfEvent(String os) {
 
-        for (int i = 0; i < embedded.getEventList().size(); i++)
-                if (os.equals(embedded.getEventList().get(i).getEventName())) {
-                    imageEvent=embedded.getEventList().get(i).getImgList().get(3).getImageURL();
-                    startDate=embedded.getEventList().get(i).getDates().getStartDate().getDayStartEvent();
-                    System.out.println("->>>>>>>>"+imageEvent);
-                }
-
-
-    }
-    static public Object bytes2Object( byte raw[] )
+    static public Object bytes2Object(byte raw[])
             throws IOException, ClassNotFoundException {
-        ByteArrayInputStream bais = new ByteArrayInputStream( raw );
-        ObjectInputStream ois = new ObjectInputStream( bais );
+        ByteArrayInputStream bais = new ByteArrayInputStream(raw);
+        ObjectInputStream ois = new ObjectInputStream(bais);
         Object o = ois.readObject();
         return o;
     }

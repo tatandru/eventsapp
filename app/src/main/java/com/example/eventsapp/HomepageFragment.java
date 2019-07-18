@@ -31,6 +31,7 @@ import com.example.eventsapp.adapters.CategoriesRVAdapter;
 import com.example.eventsapp.retrofitAPI.ApiConstans;
 import com.example.eventsapp.retrofitAPI.BaseRouteEvents;
 import com.example.eventsapp.retrofitAPI.Embedded;
+import com.example.eventsapp.retrofitAPI.Event;
 import com.example.eventsapp.retrofitAPI.RetrofitClient;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -43,7 +44,6 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.sql.SQLOutput;
 import java.util.Arrays;
 
 import java.util.ArrayList;
@@ -72,6 +72,7 @@ public class HomepageFragment extends Fragment {
     private ArrayList<String> imgUpcomingEventNameList;
     private String cityName;
     private Embedded embedded;
+    private List<Event> eventList;
 
     @Nullable
     @Override
@@ -126,6 +127,7 @@ public class HomepageFragment extends Fragment {
 
 
                 for (int i = 0; i < eventListSize; i++) {
+
                     classificationListSize = baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().size();
                     int imageListSize = baseRouteEventsBody.getEmbedded().getEventList().get(i).getImgList().size();
                     List<String> imageList = new ArrayList<>();
@@ -149,19 +151,23 @@ public class HomepageFragment extends Fragment {
                 imgThreeInList = new ArrayList<>();
                 subCategories = new ArrayList<>();
 
-                for (int i = 0; i < eventListSize; i++) {
 
+                for (int i = 0; i < eventListSize; i++) {
 
                     for (int j = 0; j < baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().size(); j++) {
 
                         String e = baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().get(j).getGenre().getEventGenre();
+                        Integer index = baseRouteEventsBody.getEmbedded().getEventList().get(i).getIdEvent();
 
                         if (!subCategories.contains(e)) {
                             subCategories.add(e);
                             imgThreeInList.add(urlList.get(i).get(3));
+
                             Log.e("HomepageFragment", "Lista de subcategorii se incarca");
+                        } else {
+                            Log.e("HomepageFragment", "Lista de subcategorii contine elementul ");
                         }
-                        Log.e("HomepageFragment", "Lista de subcategorii contine elementul ");
+
                     }
 
                 }
@@ -193,21 +199,32 @@ public class HomepageFragment extends Fragment {
             @Override
             public void onClick(String os) {
 
-                //Toast.makeText(getActivity(), "Coming soon", Toast.LENGTH_SHORT).show();
                 try {
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     UpcomingEventsFragment eventsFragment = new UpcomingEventsFragment();
 
 
-                    retrieveImageOfEvent(os);
-                    if (printMessage(imgEventsInList, os)) {
+                    eventList = retrievefEvent(os);
+
+                    ArrayList<Integer> idList = new ArrayList<>();
+                    for (int i = 0; i < imgUpcomingEventNameList.size(); i++) {
+                        eventList.get(i).setIdEvent(i);
+                        idList.add(i);
+                        Log.e("UpcomingEventsFragment", imgUpcomingEventNameList.get(i) + " " + embedded.getEventList().get(i).getIdEvent() + "");
+                    }
+                    if (printMessage()) {
                         Bundle bundle = new Bundle();
 
                         bundle.putByteArray("As", object2Bytes(embedded));
                         bundle.putString("title", os);
+                        bundle.putIntegerArrayList("idList", idList);
                         bundle.putStringArrayList("img", imgEventsInList);
                         bundle.putStringArrayList("name_of_event", imgUpcomingEventNameList);
                         eventsFragment.setArguments(bundle);//data being send to SecondFragment
+                        Log.e("HomepageFragment", eventList.toString());
+                        bundle.putByteArray("eventListSubcategories", object2Bytes(eventList));
+                        eventsFragment.setArguments(bundle); //data being send to SecondFragment
+
                         transaction.replace(R.id.fragment_container, eventsFragment);
                         transaction.addToBackStack(null);
                         transaction.commit();
@@ -301,23 +318,25 @@ public class HomepageFragment extends Fragment {
         });
     }
 
-    private void retrieveImageOfEvent(String os) {
+    private List<Event> retrievefEvent(String event) {
         imgEventsInList = new ArrayList<>();
         imgUpcomingEventNameList = new ArrayList<>();
+        eventList = new ArrayList<>();
         for (int i = 0; i < baseRouteEventsBody.getEmbedded().getEventList().size(); i++)
             for (int j = 0; j < baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().size(); j++)
-                if (os.equals(baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().get(j).getGenre().getEventGenre())) {
+                if (event.equals(baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().get(j).getGenre().getEventGenre())) {
                     System.out.println(baseRouteEventsBody.getEmbedded().getEventList().get(i).getEventName());
-                    imgEventsInList.add(baseRouteEventsBody.getEmbedded().getEventList().get(i).getImgList().get(3).getImageURL());
-                    imgUpcomingEventNameList.add(baseRouteEventsBody.getEmbedded().getEventList().get(i).getEventName());
-
+                    // imgEventsInList.add(baseRouteEventsBody.getEmbedded().getEventList().get(i).getImgList().get(3).getImageURL());
+                    // imgUpcomingEventNameList.add(baseRouteEventsBody.getEmbedded().getEventList().get(i).getEventName());
+                    eventList.add(baseRouteEventsBody.getEmbedded().getEventList().get(i));
+                    Log.e("HomepageFragment", "Lista de event pe categorie :" + baseRouteEventsBody.getEmbedded().getEventList().get(i).toString());
                 }
 
-
+        return eventList;
     }
 
-    private boolean printMessage(List img, String os) {
-        return img.size() >= 1;
+    private boolean printMessage() {
+        return eventList.size() >= 1;
     }
 
     private void addLocation() {
@@ -358,8 +377,9 @@ public class HomepageFragment extends Fragment {
     private String processLocation(String latitude, String longitude) {
         List<Address> address;
         String city = "";
-        Geocoder geocoder = new Geocoder(this.getActivity());
+
         try {
+            Geocoder geocoder = new Geocoder(this.getActivity());
             address = geocoder.getFromLocation(Double.parseDouble(latitude), Double.parseDouble(longitude), 3);
             city = address.get(0).getLocality();
         } catch (Exception e) {
