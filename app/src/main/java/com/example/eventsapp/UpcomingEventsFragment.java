@@ -134,8 +134,7 @@ public class UpcomingEventsFragment extends Fragment {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Toast.makeText(ge
-                            tContext(), os, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), os, Toast.LENGTH_SHORT).show();
                 }
             }
         });
