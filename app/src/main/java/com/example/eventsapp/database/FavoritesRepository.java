@@ -14,6 +14,7 @@ public class FavoritesRepository {
     private FavoritesDao favoritesDao;
     private LiveData<List<FavoriteEvents>> events;
     private FavoritesDatabase favoritesDatabase;
+    private FavoriteEvents event;
 
     FavoritesRepository(Application application) {
         favoritesDatabase = FavoritesDatabase.getInstance(application);
@@ -23,15 +24,6 @@ public class FavoritesRepository {
     LiveData<List<FavoriteEvents>> getAllEvents(){
         return events;
     }
-    public String searchEvent(List<FavoriteEvents> events,String searchedEvent){
-        for(int i =0;i<events.size();i++){
-            if(events.get(i).getEventName().equals(searchedEvent)){
-                return searchedEvent;
-            }
-        }
-        return null;
-    }
-
     void insertEvent(FavoriteEvents event){
         new InsertEventAsyncTask(favoritesDao).execute(event);
     }
