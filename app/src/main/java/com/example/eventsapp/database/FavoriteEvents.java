@@ -9,8 +9,9 @@ import java.io.Serializable;
 
 @Entity
 public class FavoriteEvents implements Serializable {
-    @NonNull
     @PrimaryKey
+    private int id;
+    @ColumnInfo
     private String eventName;
 
     @ColumnInfo
@@ -40,11 +41,20 @@ public class FavoriteEvents implements Serializable {
     @ColumnInfo
     private String country;
 
-    public FavoriteEvents(String eventName, String urlImg, String startDate,String endDate) {
+    public FavoriteEvents(int id,String eventName, String urlImg, String startDate,String endDate) {
+        this.id=id;
         this.eventName = eventName;
         this.urlImg = urlImg;
         this.startDate = startDate;
         this.endDate=endDate;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getEventName() {
