@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventsapp.adapters.EventsListRVAdapter;
 import com.example.eventsapp.database.EventsViewModel;
+import com.example.eventsapp.database.FavoriteEvents;
+import com.example.eventsapp.database.FavoritesDatabase;
 import com.example.eventsapp.retrofitAPI.Embedded;
 import com.example.eventsapp.retrofitAPI.Event;
 
@@ -100,21 +102,18 @@ public class UpcomingEventsFragment extends Fragment {
                     FragmentTransaction transaction = getFragmentManager().beginTransaction();
                     FilterFragment filterFragment = new FilterFragment();
                     Bundle bundle1 = new Bundle();
-                    for(int i=0;i<eventListRV.size();i++)
-                    {
+                    for (int i = 0; i < eventListRV.size(); i++) {
                         System.out.println(eventListRV.get(i));
                     }
-                    for (int i=0;i<eventListRV.size();i++)
-                    {
-                        System.out.println(">>>>>>"+eventListRV.get(i));
+                    for (int i = 0; i < eventListRV.size(); i++) {
+                        System.out.println(">>>>>>" + eventListRV.get(i));
                     }
                     bundle1.putByteArray("eventListOnOneCategory", HomepageFragment.object2Bytes(eventListRV));
                     filterFragment.setArguments(bundle1);
                     transaction.replace(R.id.fragment_container, filterFragment);
                     transaction.addToBackStack(null);
                     transaction.commit();
-                }catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -135,18 +134,15 @@ public class UpcomingEventsFragment extends Fragment {
             @Override
             public void onClick(String os, Event event) {
 
-
                 try {
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    Bundle bundle = new Bundle();
                     System.out.println("WORKED" +
                             "sadsadsadasdas");
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    EventFragment eventsFragment = new EventFragment();
-                    EventsViewModel favoritesViewModel = new EventsViewModel(getActivity().getApplication());
-                    favoritesViewModel.getAllEvents();
-                    Bundle bundle = new Bundle();
                     bundle.putString("title", os);
                     retrieveImageOfEvent(os, event);
                     bundle.putByteArray("event", HomepageFragment.object2Bytes(event));
+                    EventFragment eventsFragment = new EventFragment();
                     eventsFragment.setArguments(bundle); //data being send to SecondFragment
                     transaction.replace(R.id.fragment_container, eventsFragment);
                     transaction.addToBackStack(null);

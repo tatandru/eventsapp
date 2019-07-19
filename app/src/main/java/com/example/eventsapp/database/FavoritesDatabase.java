@@ -40,6 +40,7 @@ public abstract class FavoritesDatabase extends RoomDatabase {
 
         @Override
         protected Void doInBackground(Void... voids) {
+            favoritesDao.insertEvent(new FavoriteEvents(0,"","asdf","asd","asds"));
             return null;
         }
     }

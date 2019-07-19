@@ -40,6 +40,7 @@ public class EventFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.event_details, container, false);
+
         Bundle bundle = getArguments();
         try {
             event = (Event) UpcomingEventsFragment.bytes2Object(bundle.getByteArray("event"));
@@ -54,20 +55,33 @@ public class EventFragment extends Fragment {
         eventImage = view.findViewById(R.id.iv_event_image);
         tv_event_name = view.findViewById(R.id.tv_description);
         tv_start_date = view.findViewById(R.id.tv_start_data);
-        favoriteButton = view.findViewById(R.id.btn_heart);
         tv_end_date = view.findViewById(R.id.tv_end_data);
+        favoriteButton = view.findViewById(R.id.btn_heart);
         Glide.with(this.getContext()).load(event.getImgList().get(3).getImageURL()).into(eventImage);
         tv_event_name.setText(event.getEventName());
         tv_start_date.setText(event.getDates().getStartDate().getDayStartEvent());
         favoritesViewModel = new EventsViewModel(getActivity().getApplication());
+
+//        try {
+//            int size = favoritesViewModel.getRowCount();
+//            for (int i = 0; i < size; i++) {
+//                if (favoritesViewModel.getAllEvents().getValue().get(i).getId() == event.getIdEvent()) {
+//                    favoriteButton.setChecked(true);
+//                } else {
+//                    favoriteButton.setChecked(false);
+//                }
+//            }
+//        } catch (Exception e) {
+//            favoriteButton.setChecked(false);
+//        }
         try {
             tv_end_date.setText(splitAtACharacter(event.getDates().getStartDate().getDayEndAndTime()));
         } catch (Exception e) {
             tv_end_date.setText("Date not found");
         }
         //favoritesDatabase=FavoritesDatabase.getInstance(this.getContext());
-        int id=event.getIdEvent();
-        favoriteEvent = new FavoriteEvents(id,event.getEventName(), event.getImgList().get(3).getImageURL(), event.getDates().getStartDate().getDayStartEvent(), tv_end_date.getText().toString());
+        int id = event.getIdEvent();
+        favoriteEvent = new FavoriteEvents(id, event.getEventName(), event.getImgList().get(3).getImageURL(), event.getDates().getStartDate().getDayStartEvent(), tv_end_date.getText().toString());
 
         return view;
     }
@@ -80,6 +94,8 @@ public class EventFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (isChecked(favoriteButton)) {
                     favoritesViewModel.insert(favoriteEvent);
+                } else {
+                    favoritesViewModel.delete(favoriteEvent);
                 }
 
             }
@@ -94,5 +110,4 @@ public class EventFragment extends Fragment {
         String arrayUseToSplit[] = word.split("T");
         return arrayUseToSplit[0];
     }
-
 }

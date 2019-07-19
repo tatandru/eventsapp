@@ -21,50 +21,80 @@ public class FavoritesRepository {
         favoritesDao = favoritesDatabase.favoritesDao();
         events = favoritesDao.getAllEvents();
     }
-    LiveData<List<FavoriteEvents>> getAllEvents(){
+
+    LiveData<List<FavoriteEvents>> getAllEvents() {
         return events;
     }
-    void insertEvent(FavoriteEvents event){
+
+//    int getRowCount(){
+//
+//    }
+
+    void insertEvent(FavoriteEvents event) {
         new InsertEventAsyncTask(favoritesDao).execute(event);
     }
-    void updateEvent(FavoriteEvents event){
+
+    void updateEvent(FavoriteEvents event) {
         new UpdateEventAsyncTask(favoritesDao).execute(event);
     }
-    void deleteEvent(FavoriteEvents event){
+
+    void deleteEvent(FavoriteEvents event) {
         new DeleteEventAsyncTask(favoritesDao).execute(event);
     }
 
-    private static class InsertEventAsyncTask extends AsyncTask<FavoriteEvents,Void,Void>{
+    private static class InsertEventAsyncTask extends AsyncTask<FavoriteEvents, Void, Void> {
         private FavoritesDao favoritesDao;
-        private InsertEventAsyncTask(FavoritesDao favoritesDao ){
-            this.favoritesDao=favoritesDao;
+
+        private InsertEventAsyncTask(FavoritesDao favoritesDao) {
+            this.favoritesDao = favoritesDao;
         }
+
         @Override
         protected Void doInBackground(FavoriteEvents... favoriteEvents) {
             favoritesDao.insertEvent(favoriteEvents[0]);
             return null;
         }
     }
-    private static class UpdateEventAsyncTask extends AsyncTask<FavoriteEvents,Void,Void>{
+
+    private static class UpdateEventAsyncTask extends AsyncTask<FavoriteEvents, Void, Void> {
         private FavoritesDao favoritesDao;
-        private UpdateEventAsyncTask(FavoritesDao favoritesDao ){
-            this.favoritesDao=favoritesDao;
+
+        private UpdateEventAsyncTask(FavoritesDao favoritesDao) {
+            this.favoritesDao = favoritesDao;
         }
+
         @Override
         protected Void doInBackground(FavoriteEvents... favoriteEvents) {
             favoritesDao.updateEvent(favoriteEvents[0]);
             return null;
         }
     }
-    private static class DeleteEventAsyncTask extends AsyncTask<FavoriteEvents,Void,Void>{
+
+    private static class DeleteEventAsyncTask extends AsyncTask<FavoriteEvents, Void, Void> {
         private FavoritesDao favoritesDao;
-        private DeleteEventAsyncTask(FavoritesDao favoritesDao ){
-            this.favoritesDao=favoritesDao;
+
+        private DeleteEventAsyncTask(FavoritesDao favoritesDao) {
+            this.favoritesDao = favoritesDao;
         }
+
         @Override
         protected Void doInBackground(FavoriteEvents... favoriteEvents) {
             favoritesDao.deleteEvent(favoriteEvents[0]);
             return null;
         }
     }
+
+//    private static class getRowCountAsyncTask extends AsyncTask<Integer, Void, Void> {
+//        private FavoritesDao favoritesDao;
+//
+//        private getRowCountAsyncTask(FavoritesDao favoritesDao) {
+//            this.favoritesDao = favoritesDao;
+//        }
+//
+//        @Override
+//        protected Void doInBackground(Integer... integers) {
+//            favoritesDao.getRowCount();
+//            return null;
+//        }
+//    }
 }
