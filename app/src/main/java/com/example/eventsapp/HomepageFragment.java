@@ -147,7 +147,10 @@ public class HomepageFragment extends Fragment {
                 List<String> eventClassificationList = new ArrayList<>();
                 List<List<String>> urlList = new ArrayList<>();
 
-
+                for (int i = 0; i < embedded.getEventList().size(); i++) {
+                    embedded.getEventList().get(i).setIdEvent(i);
+                    System.out.println("ID:=== " + baseRouteEventsBody.getEmbedded().getEventList().get(i).getIdEvent() + " ");
+                }
                 for (int i = 0; i < eventListSize; i++) {
 
                     classificationListSize = baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().size();
