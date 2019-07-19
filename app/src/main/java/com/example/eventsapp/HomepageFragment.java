@@ -108,6 +108,28 @@ public class HomepageFragment extends Fragment {
     /**
      * Load Events From BaseRouteEvents
      */
+
+    private List<Event> locationFilter(List<Event> events) {
+
+        String cityLocation = searchBar.getText().toString();
+        List<Event> thisEvents = new ArrayList<>();
+
+        for (Event e : events) {
+
+            if (cityLocation.contains(e.getInfoEmbedded().getVenues().get(0).getCity().getEventCityName())
+                    || cityLocation.equalsIgnoreCase(e.getInfoEmbedded().getVenues().get(0).getCity().getEventCityName())) {
+                thisEvents.add(e);
+                Log.e("HomepageFragment", "Oras : " + cityLocation + "\n"
+                        + e.getInfoEmbedded().getVenues().get(0).getEventLocation() + "\n");
+            }
+            Log.e("HomepageFragment", "Oras : " + cityLocation + " ;\t"
+                    + e.getInfoEmbedded().getVenues().get(0).getEventLocation() + "\n");
+        }
+
+
+        return thisEvents;
+    }
+
     private void loadEvents() {
         Call<BaseRouteEvents> call = retrofit.getEventService().getEvents(ApiConstans.APP_KEY);
 
@@ -125,7 +147,10 @@ public class HomepageFragment extends Fragment {
                 List<String> eventClassificationList = new ArrayList<>();
                 List<List<String>> urlList = new ArrayList<>();
 
-
+                for (int i = 0; i < embedded.getEventList().size(); i++) {
+                    embedded.getEventList().get(i).setIdEvent(i);
+                    System.out.println("ID:=== " + baseRouteEventsBody.getEmbedded().getEventList().get(i).getIdEvent() + " ");
+                }
                 for (int i = 0; i < eventListSize; i++) {
 
                     classificationListSize = baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().size();
@@ -206,11 +231,17 @@ public class HomepageFragment extends Fragment {
 
                     eventList = retrievefEvent(os);
 
+
+                    if (!searchBar.getText().toString().isEmpty()) {
+                        eventList = locationFilter(eventList);
+                    }
+
+
                     ArrayList<Integer> idList = new ArrayList<>();
                     for (int i = 0; i < imgUpcomingEventNameList.size(); i++) {
                         eventList.get(i).setIdEvent(i);
                         idList.add(i);
-                        Log.e("UpcomingEventsFragment", imgUpcomingEventNameList.get(i) + " " + embedded.getEventList().get(i).getIdEvent() + "");
+                        Log.e("HomepageFragment", imgUpcomingEventNameList.get(i) + " " + embedded.getEventList().get(i).getIdEvent() + "");
                     }
                     if (printMessage()) {
                         Bundle bundle = new Bundle();
