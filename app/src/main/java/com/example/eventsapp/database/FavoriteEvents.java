@@ -40,10 +40,11 @@ public class FavoriteEvents implements Serializable {
     @ColumnInfo
     private String country;
 
-    public FavoriteEvents(String eventName, String urlImg, String startDate) {
+    public FavoriteEvents(String eventName, String urlImg, String startDate,String endDate) {
         this.eventName = eventName;
         this.urlImg = urlImg;
         this.startDate = startDate;
+        this.endDate=endDate;
     }
 
     public String getEventName() {

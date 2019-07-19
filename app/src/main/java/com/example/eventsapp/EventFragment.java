@@ -56,13 +56,14 @@ public class EventFragment extends Fragment {
         tv_event_name.setText(event.getEventName());
         tv_start_date.setText(event.getDates().getStartDate().getDayStartEvent());
         favoritesViewModel = new EventsViewModel(getActivity().getApplication());
-        favoriteEvent = new FavoriteEvents(event.getEventName(), event.getImgList().get(3).getImageURL(), event.getDates().getStartDate().getDayStartEvent());
         try {
             tv_end_date.setText(splitAtACharacter(event.getDates().getStartDate().getDayEndAndTime()));
         }catch (Exception e)
         {
             tv_end_date.setText("Date not found");
         }
+        favoriteEvent = new FavoriteEvents(event.getEventName(), event.getImgList().get(3).getImageURL(), event.getDates().getStartDate().getDayStartEvent(),tv_end_date.getText().toString());
+
         return view;
     }
 
