@@ -94,8 +94,29 @@ public class UpcomingEventsFragment extends Fragment {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FilterFragment()).addToBackStack(null).commit();
+                try {
 
+
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    FilterFragment filterFragment = new FilterFragment();
+                    Bundle bundle1 = new Bundle();
+                    for(int i=0;i<eventListRV.size();i++)
+                    {
+                        System.out.println(eventListRV.get(i));
+                    }
+                    for (int i=0;i<eventListRV.size();i++)
+                    {
+                        System.out.println(">>>>>>"+eventListRV.get(i));
+                    }
+                    bundle1.putByteArray("eventListOnOneCategory", HomepageFragment.object2Bytes(eventListRV));
+                    filterFragment.setArguments(bundle1);
+                    transaction.replace(R.id.fragment_container, filterFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }catch (Exception e)
+                {
+                    e.printStackTrace();
+                }
             }
         });
         return view;

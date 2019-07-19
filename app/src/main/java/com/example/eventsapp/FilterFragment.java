@@ -20,7 +20,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.eventsapp.retrofitAPI.Embedded;
+import com.example.eventsapp.retrofitAPI.Event;
+
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
@@ -30,9 +37,13 @@ public class FilterFragment extends Fragment {
     private TextView tv_to;
     private SeekBar seekBar;
     private Button btn_filter;
+    private TextView tv_min_price;
+    private TextView tv_max_price;
     private int counter = 0;
     private DatePickerDialog.OnDateSetListener dp_start_date;
     private DatePickerDialog.OnDateSetListener dp_end_date;
+    private List<Event> eventListRV;
+
 
     @Nullable
     @Override
@@ -43,7 +54,30 @@ public class FilterFragment extends Fragment {
         btn_filter = view.findViewById(R.id.btn_filter);
         tv_to = view.findViewById(R.id.tv_to);
         seekBar = view.findViewById(R.id.seekBar_price);
+        tv_max_price = view.findViewById(R.id.tv_price_max);
+        tv_min_price = view.findViewById(R.id.tv_price_min);
+
         clickOnStartDate();
+        Bundle bundle = getArguments();
+
+
+        if (bundle != null) {
+            eventListRV = new ArrayList<>();
+
+            try {
+
+                eventListRV = (List<Event>) UpcomingEventsFragment.bytes2Object(bundle.getByteArray("eventListOnOneCategory"));
+                System.out.println(eventListRV.size());
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            tv_max_price.setText(getMaxPrice() + "");
+            tv_min_price.setText(getMinPrice() + "");
+        }
 
         tv_start_date.addTextChangedListener(new TextWatcher() {
             @Override
@@ -96,7 +130,14 @@ public class FilterFragment extends Fragment {
 
             }
         });
+        btn_filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         return view;
+
     }
 
     private void clickOnEndDate() {
@@ -165,5 +206,32 @@ public class FilterFragment extends Fragment {
         btn_filter.setVisibility(View.VISIBLE);
 
     }
+
+    private double getMaxPrice() {
+        List<Double> list = new ArrayList<>();
+        for (int i = 0; i < eventListRV.size(); i++) {
+            if(eventListRV.get(i).getPriceRangeList()!=null)
+                 list.add(eventListRV.get(i).getPriceRangeList().get(0).getMaxPrice());
+
+        }
+        Collections.sort(list);
+        if(list.size()>0)
+            return list.get(list.size() - 1);
+        return 0;
+    }
+
+    private double getMinPrice() {
+        List<Double> list = new ArrayList<>();
+        for (int i = 0; i < eventListRV.size(); i++) {
+            if(eventListRV.get(i).getPriceRangeList()!=null)
+                list.add(eventListRV.get(i).getPriceRangeList().get(0).getMinPrice());
+            else
+                list.add(0.0);
+        }
+        Collections.sort(list);
+        return list.get(0);
+
+    }
+
 
 }
