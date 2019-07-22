@@ -5,6 +5,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -20,17 +22,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class EventsListRVAdapter extends RecyclerView.Adapter<EventsListRVAdapter.ItemsViewHolder> {
+public class EventsListRVAdapter extends RecyclerView.Adapter<EventsListRVAdapter.ItemsViewHolder> implements Filterable {
 
     private final LayoutInflater inflater;
     private List<String> eventsList;
     private List<String> urlImagesList;
     private List<Integer> idEventList;
     private List<Event> eventList;
+    private ArrayList<Event> copyEventList;
     private ItemClickListener itemClickListener;
     private Context context;
     private Embedded embedded;
     private Event event;
+    private MyFilter mFilter;
 
 
     public void setCategoryClickListener(ItemClickListener itemClickListener) {
@@ -50,6 +54,7 @@ public class EventsListRVAdapter extends RecyclerView.Adapter<EventsListRVAdapte
         this.urlImagesList = urlImages;
         this.inflater = LayoutInflater.from(context);
         this.context = context;
+        this.copyEventList=new ArrayList<>();
     }
 
     public interface ItemClickListener {
@@ -104,5 +109,60 @@ public class EventsListRVAdapter extends RecyclerView.Adapter<EventsListRVAdapte
             this.imgEvent = itemView.findViewById(R.id.img_upcoming_event);
 
         }
+    }
+    @Override
+    public Filter getFilter() {
+
+        if (mFilter == null) {
+            copyEventList.clear();
+            copyEventList.addAll(this.eventList);
+            mFilter = new EventsListRVAdapter.MyFilter(this, copyEventList);
+        }
+        return mFilter;
+
+    }
+    private static class MyFilter extends Filter {
+
+        private final EventsListRVAdapter myAdapter;
+        private final ArrayList<Event> originalList;
+        private final ArrayList<Event> filteredList;
+
+        private MyFilter(EventsListRVAdapter myAdapter, ArrayList<Event> originalList) {
+            this.myAdapter = myAdapter;
+            this.originalList = originalList;
+            this.filteredList = new ArrayList<Event>();
+        }
+
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+
+            filteredList.clear();
+            final FilterResults results = new FilterResults();
+            if (charSequence.length() == 0) {
+                filteredList.addAll(originalList);
+            } else {
+                final String filterPattern = charSequence.toString().toLowerCase().trim();
+                for (Event item : originalList) {
+                    if (item.getEventName().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(item);
+                    }
+                }
+            }
+
+            results.values = filteredList;
+            results.count = filteredList.size();
+            return results;
+
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+
+            myAdapter.eventList.clear();
+            myAdapter.eventList.addAll((ArrayList<Event>) filterResults.values);
+            myAdapter.notifyDataSetChanged();
+
+        }
+
     }
 }
