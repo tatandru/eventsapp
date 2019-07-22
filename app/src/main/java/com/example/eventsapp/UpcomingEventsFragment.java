@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UpcomingEventsFragment extends Fragment {
+    public static final String DATA_RECEIVE ="data_received" ;
     private ImageView imageView;
     private RecyclerView rvItems;
     private EventsListRVAdapter adapter;
@@ -122,6 +123,23 @@ public class UpcomingEventsFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onResume() {
+        Log.e("DEBUG", "onResume of LoginFragment");
+        Bundle bundle = getArguments();
+        Boolean f = bundle.getBoolean("isFiltred");
+        System.out.println("sdaasd" + f);
+     /*   try {
+          //  eventListRV= (List<Event>) bytes2Object(bundle.getByteArray("filter_list"));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }*/
+        super.onResume();
+    }
     private void setupList() {
         layoutManager = new LinearLayoutManager(getContext());  // use a linear layout manager vertical
         rvItems.setLayoutManager(layoutManager);
@@ -168,10 +186,16 @@ public class UpcomingEventsFragment extends Fragment {
         eventListRV = new ArrayList<>();
 
         System.out.println(nameOfEventRetrieveFromHomePage);
-        eventTitleDataSet.addAll(nameOfEventRetrieveFromHomePage);
-        urlDateSet.addAll(urlRetrieveFromServer);
+        //   eventTitleDataSet.addAll(nameOfEventRetrieveFromHomePage);
+        //   urlDateSet.addAll(urlRetrieveFromServer);
+
         eventListRV.addAll(eventsFromHomePage);
-        Log.e("UpcomingEventsFragment", eventListRV.toString());
+
+
+
+
+
+
 
     }
 
