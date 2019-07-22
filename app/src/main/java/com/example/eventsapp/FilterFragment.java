@@ -26,12 +26,16 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.eventsapp.retrofitAPI.Embedded;
 import com.example.eventsapp.retrofitAPI.Event;
+import com.ramotion.fluidslider.FluidSlider;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
@@ -41,7 +45,6 @@ public class FilterFragment extends Fragment {
     private TextView tv_start_date;
     private TextView tv_end_date;
     private TextView tv_to;
-    private SeekBar seekBar;
     private Button btn_filter;
     private String end_date;
     private String start_date;
@@ -52,6 +55,7 @@ public class FilterFragment extends Fragment {
     private DatePickerDialog.OnDateSetListener dp_start_date;
     private DatePickerDialog.OnDateSetListener dp_end_date;
     private List<Event> eventListRV;
+    private FluidSlider fluidSlider;
     private boolean isFiltred=false;
 
     public interface DataPassListener{
@@ -82,15 +86,70 @@ public class FilterFragment extends Fragment {
         tv_end_date = view.findViewById(R.id.tv_end_date);
         btn_filter = view.findViewById(R.id.btn_filter);
         tv_to = view.findViewById(R.id.tv_to);
-        seekBar = view.findViewById(R.id.seekBar_price);
-        tv_max_price = view.findViewById(R.id.tv_price_max);
-        tv_min_price = view.findViewById(R.id.tv_price_min);
+        fluidSlider = view.findViewById(R.id.seekBar_price);
 
         clickOnStartDate();
 
-        final Bundle bundle = getArguments();
+        Bundle bundle = getArguments();
 
+        btn_filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (view.getId() == R.id.btn_filter) {
+                    mCallback.passData("Text to pass FragmentB");
+                }
+            }
+        });
 
+        if (bundle != null) {
+            eventListRV = new ArrayList<>();
+            try {
+
+                eventListRV = (List<Event>) UpcomingEventsFragment.bytes2Object(bundle.getByteArray("eventListOnOneCategory"));
+                System.out.println(eventListRV.size());
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+        }
+        final Double max = getMaxPrice();
+        final Double min = getMinPrice();
+        final Double total = max - min;
+        final float interval = 0.3f;
+
+        fluidSlider.setStartText(String.valueOf(min));
+        fluidSlider.setEndText(String.valueOf(max));
+        fluidSlider.setBeginTrackingListener(new Function0<Unit>() {
+            @Override
+            public Unit invoke() {
+                turnOnButtonVisbility();
+                Log.d("D", "setBeginTrackingListener");
+                return Unit.INSTANCE;
+            }
+        });
+        fluidSlider.setEndTrackingListener(new Function0<Unit>() {
+            @Override
+            public Unit invoke() {
+                Log.d("D", "setEndTrackingListener");
+                return Unit.INSTANCE;
+            }
+        });
+        fluidSlider.setPositionListener(pos -> {
+            final String value = String.valueOf((int) (min + total * pos));
+            fluidSlider.setBubbleText(value);
+            filterPrice = (int) (min + total * pos);
+            Log.e("FilterPrice", "-------------------->" + filterPrice);
+            return Unit.INSTANCE;
+        });
+        fluidSlider.setPosition(interval);
+
+        clickOnStartDate();
+
+        
         if (bundle != null) {
             eventListRV = new ArrayList<>();
 
@@ -105,8 +164,7 @@ public class FilterFragment extends Fragment {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            tv_max_price.setText(getMaxPrice() + "");
-            tv_min_price.setText(getMinPrice() + "");
+
         }
 
         tv_start_date.addTextChangedListener(new TextWatcher() {
@@ -144,28 +202,6 @@ public class FilterFragment extends Fragment {
                 turnOnButtonVisbility();
             }
         });
-
-        seekBar.setLeft((int) getMinPrice());
-        seekBar.setMax((int) getMaxPrice());
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                turnOnButtonVisbility();
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                System.out.println(seekBar.getProgress());
-                filterPrice = seekBar.getProgress();
-
-            }
-        });
-
 
         // Suppose that when a button clicked second FragmentB will be inflated
         // some data on FragmentA will pass FragmentB
