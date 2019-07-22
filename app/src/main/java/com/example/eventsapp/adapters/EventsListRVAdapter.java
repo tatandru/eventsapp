@@ -36,7 +36,6 @@ public class EventsListRVAdapter extends RecyclerView.Adapter<EventsListRVAdapte
     private Event event;
     private MyFilter mFilter;
 
-
     public void setCategoryClickListener(ItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
     }
@@ -121,6 +120,16 @@ public class EventsListRVAdapter extends RecyclerView.Adapter<EventsListRVAdapte
         return mFilter;
 
     }
+    public Filter resetFilter()
+    {
+
+        if (mFilter == null) {
+            copyEventList.clear();
+            mFilter = new EventsListRVAdapter.MyFilter(this, copyEventList);
+        }
+        return mFilter;
+    }
+
     private static class MyFilter extends Filter {
 
         private final EventsListRVAdapter myAdapter;
@@ -141,11 +150,14 @@ public class EventsListRVAdapter extends RecyclerView.Adapter<EventsListRVAdapte
             if (charSequence.length() == 0) {
                 filteredList.addAll(originalList);
             } else {
-                final String filterPattern = charSequence.toString().toLowerCase().trim();
-                for (Event item : originalList) {
-                    if (item.getEventName().toLowerCase().contains(filterPattern)) {
-                        filteredList.add(item);
+                if(charSequence.length()>2) {
+                    final String filterPattern = charSequence.toString().toLowerCase().trim();
+                    for (Event item : originalList) {
+                        if (item.getEventName().toLowerCase().contains(filterPattern)) {
+                            filteredList.add(item);
+                        }
                     }
+
                 }
             }
 

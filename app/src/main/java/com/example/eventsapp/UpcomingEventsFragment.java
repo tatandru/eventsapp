@@ -219,11 +219,13 @@ public class UpcomingEventsFragment extends Fragment {
             public boolean onQueryTextSubmit(String query) {
                // resetSearchView();
                 adapter.getFilter().filter(query);
+                searchView.onActionViewCollapsed();
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+
                 adapter.getFilter().filter(newText);
                 return true;
 
