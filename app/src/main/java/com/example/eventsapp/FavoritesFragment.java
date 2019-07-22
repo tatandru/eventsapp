@@ -41,8 +41,13 @@ public class FavoritesFragment extends Fragment {
                 adapter.setFavoriteEvents(favoriteEvents);
             }
         });
-
-
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+
     }
 }
