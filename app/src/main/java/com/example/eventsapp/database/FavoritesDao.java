@@ -22,8 +22,10 @@ public interface FavoritesDao {
     LiveData<List<FavoriteEvents>> getAllEvents();
     @Query("SELECT COUNT(id) FROM FavoriteEvents")
     int getRowCount();
-//    @Query("Select * from FavoriteEvents where eventName=:eventName")
-//    FavoriteEvents searchEventByName(String eventName);
-//    @Query("Select * from FavoriteEvents where startDate=:startDate")
-//    FavoriteEvents searchEventByStartDate(String startDate);
+    @Query("Select * from FavoriteEvents where eventName=:eventName")
+    FavoriteEvents searchEventByName(String eventName);
+    @Query("Select * from FavoriteEvents where startDate=:startDate")
+    FavoriteEvents searchEventByStartDate(String startDate);
+    @Query("Select * from FavoriteEvents where id=:id")
+    FavoriteEvents searchEventById(int id);
 }

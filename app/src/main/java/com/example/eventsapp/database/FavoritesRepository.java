@@ -1,11 +1,9 @@
 package com.example.eventsapp.database;
 
 import android.app.Application;
-import android.content.Context;
 import android.os.AsyncTask;
 
 import androidx.lifecycle.LiveData;
-import androidx.room.Room;
 
 import java.util.List;
 
@@ -15,6 +13,7 @@ public class FavoritesRepository {
     private LiveData<List<FavoriteEvents>> events;
     private FavoritesDatabase favoritesDatabase;
     private FavoriteEvents event;
+    private Integer integer;
 
     FavoritesRepository(Application application) {
         favoritesDatabase = FavoritesDatabase.getInstance(application);
@@ -26,10 +25,6 @@ public class FavoritesRepository {
         return events;
     }
 
-//    int getRowCount(){
-//
-//    }
-
     void insertEvent(FavoriteEvents event) {
         new InsertEventAsyncTask(favoritesDao).execute(event);
     }
@@ -40,6 +35,18 @@ public class FavoritesRepository {
 
     void deleteEvent(FavoriteEvents event) {
         new DeleteEventAsyncTask(favoritesDao).execute(event);
+    }
+    int getRowCount(){
+        return favoritesDao.getRowCount();
+    }
+    FavoriteEvents searchEventByName(String eventName){
+        return favoritesDao.searchEventByName(eventName);
+    }
+    FavoriteEvents searchEventByStartDate(String startDate){
+        return favoritesDao.searchEventByStartDate(startDate);
+    }
+    FavoriteEvents searchEventById(int id) {
+        return favoritesDao.searchEventById(id);
     }
 
     private static class InsertEventAsyncTask extends AsyncTask<FavoriteEvents, Void, Void> {
@@ -83,18 +90,15 @@ public class FavoritesRepository {
             return null;
         }
     }
-
-//    private static class getRowCountAsyncTask extends AsyncTask<Integer, Void, Void> {
+//    private static class GetRowCountAsyncTask extends AsyncTask<Void,Void,Integer>{
 //        private FavoritesDao favoritesDao;
-//
-//        private getRowCountAsyncTask(FavoritesDao favoritesDao) {
-//            this.favoritesDao = favoritesDao;
+//        private GetRowCountAsyncTask(FavoritesDao favoritesDao){
+//            this.favoritesDao=favoritesDao;
 //        }
 //
 //        @Override
-//        protected Void doInBackground(Integer... integers) {
-//            favoritesDao.getRowCount();
-//            return null;
+//        protected Integer doInBackground(Void... voids) {
+//            return favoritesDao.getRowCount();
 //        }
 //    }
 }

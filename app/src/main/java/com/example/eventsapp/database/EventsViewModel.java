@@ -34,7 +34,17 @@ public class EventsViewModel extends AndroidViewModel {
         return allEvents;
     }
 
-    public int getRowCount() {
+    public int getRowCount(){
         return repository.getRowCount();
+    }
+    public FavoriteEvents searchEventByName(String eventName){
+        return repository.searchEventByName(eventName);
+    }
+    public FavoriteEvents searchEventByStartDate(String startDate){
+        return repository.searchEventByStartDate(startDate);
+    }
+
+    public FavoriteEvents searchEventById(int id){
+        return repository.searchEventById(id);
     }
 }
