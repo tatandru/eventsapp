@@ -1,8 +1,11 @@
 package com.example.eventsapp;
 
+import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -19,6 +22,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.eventsapp.retrofitAPI.Embedded;
 import com.example.eventsapp.retrofitAPI.Event;
@@ -32,19 +36,44 @@ import java.util.List;
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class FilterFragment extends Fragment {
+
+
     private TextView tv_start_date;
     private TextView tv_end_date;
     private TextView tv_to;
     private SeekBar seekBar;
     private Button btn_filter;
+    private String end_date;
+    private String start_date;
     private TextView tv_min_price;
     private TextView tv_max_price;
     private int counter = 0;
+    private int filterPrice;
     private DatePickerDialog.OnDateSetListener dp_start_date;
     private DatePickerDialog.OnDateSetListener dp_end_date;
     private List<Event> eventListRV;
+    private boolean isFiltred=false;
 
-
+    public interface DataPassListener{
+        public void passData(String data);
+    }
+    DataPassListener mCallback;
+    @Override
+    public void onAttach(Context context)
+    {
+        super.onAttach(context);
+        // This makes sure that the host activity has implemented the callback interface
+        // If not, it throws an exception
+        try
+        {
+            mCallback = (DataPassListener) context;
+        }
+        catch (ClassCastException e)
+        {
+            throw new ClassCastException(context.toString()+ " must implement OnImageClickListener");
+        }
+    }
+    @TargetApi(Build.VERSION_CODES.O)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -58,7 +87,11 @@ public class FilterFragment extends Fragment {
         tv_min_price = view.findViewById(R.id.tv_price_min);
 
         clickOnStartDate();
-        Bundle bundle = getArguments();
+
+
+
+
+        final Bundle bundle = getArguments();
 
 
         if (bundle != null) {
@@ -114,6 +147,9 @@ public class FilterFragment extends Fragment {
                 turnOnButtonVisbility();
             }
         });
+
+        seekBar.setMin((int) getMinPrice());
+        seekBar.setMax((int) getMaxPrice());
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -127,17 +163,94 @@ public class FilterFragment extends Fragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                System.out.println(seekBar.getProgress());
+                filterPrice = seekBar.getProgress();
 
             }
         });
+
+
+        // Suppose that when a button clicked second FragmentB will be inflated
+        // some data on FragmentA will pass FragmentB
+        // Button passDataButton = (Button).........
+
         btn_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if (view.getId() == R.id.passDataButton) {
+                    mCallback.passData("Text to pass FragmentB");
+                }
             }
         });
+    }
+        btn_filter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                eventListRV=filterAfterPrice(eventListRV);
+                try {
+              /*      isFiltred=true;
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    UpcomingEventsFragment eventsFragment = new UpcomingEventsFragment();
+                    Bundle bundle1 = new Bundle();
+                   // bundle1.putInt("seekBar_value", seekBar.getProgress());
+                    System.out.println(isFiltred);
+                    bundle1.putBoolean("isFiltred",isFiltred);
+                   // bundle1.putByteArray("filtred_list",HomepageFragment.object2Bytes(eventListRV));
+                    eventsFragment.setArguments(bundle1);
+                    transaction.replace(R.id.fragment_container, eventsFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();*/
+                    getFragmentManager().popBackStack();
+
+
+
+                } catch (Exception e) {
+
+                }
+            }
+        });
+
         return view;
 
+    }
+    private void printLis(List<Event>list)
+    {
+        for (Event e:list) {
+            System.out.println("____>"+e);
+
+        }
+    }
+    private  List<Event>filterByDate(List<Event> list)
+    {
+        List<Event> eventList = new ArrayList<>();
+        for (Event e : list) {
+
+            if (equals(e.getDates().getStartDate().getDayStartEvent())) {
+
+                if (filterPrice >= e.getPriceRangeList().get(0).getMaxPrice()) {
+                    eventList.add(e);
+                }
+            } else {
+                eventList.add(e);
+            }
+        }
+        return eventList;
+    }
+
+
+    private List<Event> filterAfterPrice(List<Event> list) {
+        List<Event> eventList = new ArrayList<>();
+        for (Event e : list) {
+
+            if (e.getPriceRangeList()!=null) {
+                if (filterPrice >= e.getPriceRangeList().get(0).getMaxPrice()) {
+                    eventList.add(e);
+                }
+            } else {
+                eventList.add(e);
+            }
+        }
+        return eventList;
     }
 
     private void clickOnEndDate() {
@@ -210,12 +323,12 @@ public class FilterFragment extends Fragment {
     private double getMaxPrice() {
         List<Double> list = new ArrayList<>();
         for (int i = 0; i < eventListRV.size(); i++) {
-            if(eventListRV.get(i).getPriceRangeList()!=null)
-                 list.add(eventListRV.get(i).getPriceRangeList().get(0).getMaxPrice());
+            if (eventListRV.get(i).getPriceRangeList() != null)
+                list.add(eventListRV.get(i).getPriceRangeList().get(0).getMaxPrice());
 
         }
         Collections.sort(list);
-        if(list.size()>0)
+        if (list.size() > 0)
             return list.get(list.size() - 1);
         return 0;
     }
@@ -223,7 +336,7 @@ public class FilterFragment extends Fragment {
     private double getMinPrice() {
         List<Double> list = new ArrayList<>();
         for (int i = 0; i < eventListRV.size(); i++) {
-            if(eventListRV.get(i).getPriceRangeList()!=null)
+            if (eventListRV.get(i).getPriceRangeList() != null)
                 list.add(eventListRV.get(i).getPriceRangeList().get(0).getMinPrice());
             else
                 list.add(0.0);
