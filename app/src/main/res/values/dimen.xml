@@ -3,7 +3,7 @@
 
     <!--Margins-->
     <dimen name="marginNormal">8dp</dimen>
-
+    <dimen name="margiN2">16dp</dimen>
     <!--Text size-->
     <dimen name="txtTitle">24sp</dimen>
     <dimen name="txtNormal">16sp</dimen>
