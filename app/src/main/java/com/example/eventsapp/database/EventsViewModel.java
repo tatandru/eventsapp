@@ -11,21 +11,40 @@ import java.util.List;
 public class EventsViewModel extends AndroidViewModel {
     private FavoritesRepository repository;
     private LiveData<List<FavoriteEvents>> allEvents;
+
     public EventsViewModel(@NonNull Application application) {
         super(application);
-        repository=new FavoritesRepository(application);
-        allEvents=repository.getAllEvents();
+        repository = new FavoritesRepository(application);
+        allEvents = repository.getAllEvents();
     }
-    public void insert(FavoriteEvents event){
+
+    public void insert(FavoriteEvents event) {
         repository.insertEvent(event);
     }
-    public void update(FavoriteEvents event){
+
+    public void update(FavoriteEvents event) {
         repository.updateEvent(event);
     }
-    public void delete(FavoriteEvents event){
+
+    public void delete(FavoriteEvents event) {
         repository.deleteEvent(event);
     }
-    public LiveData<List<FavoriteEvents>> getAllEvents(){
+
+    public LiveData<List<FavoriteEvents>> getAllEvents() {
         return allEvents;
+    }
+
+    public int getRowCount(){
+        return repository.getRowCount();
+    }
+    public FavoriteEvents searchEventByName(String eventName){
+        return repository.searchEventByName(eventName);
+    }
+    public FavoriteEvents searchEventByStartDate(String startDate){
+        return repository.searchEventByStartDate(startDate);
+    }
+
+    public FavoriteEvents searchEventById(int id){
+        return repository.searchEventById(id);
     }
 }

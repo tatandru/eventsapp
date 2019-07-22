@@ -35,6 +35,8 @@ public class EventFragment extends Fragment {
     private ImageView eventImage;
     private FavoriteEvents favoriteEvent;
     private FavoritesDatabase favoritesDatabase;
+    private LiveData<List<FavoriteEvents>> events;
+    private FavoriteEvents eventChecker;
 
     @Nullable
     @Override
@@ -54,23 +56,26 @@ public class EventFragment extends Fragment {
         eventImage = view.findViewById(R.id.iv_event_image);
         tv_event_name = view.findViewById(R.id.tv_description);
         tv_start_date = view.findViewById(R.id.tv_start_data);
-        favoriteButton = view.findViewById(R.id.btn_heart);
         tv_end_date = view.findViewById(R.id.tv_end_data);
+        favoriteButton = view.findViewById(R.id.btn_heart);
+        favoritesViewModel = new EventsViewModel(getActivity().getApplication());
+        eventChecker(event);
         Glide.with(this.getContext()).load(event.getImgList().get(3).getImageURL()).into(eventImage);
         tv_event_name.setText(event.getEventName());
         tv_start_date.setText(event.getDates().getStartDate().getDayStartEvent());
-        favoritesViewModel = new EventsViewModel(getActivity().getApplication());
+
+
         try {
             tv_end_date.setText(splitAtACharacter(event.getDates().getStartDate().getDayEndAndTime()));
         } catch (Exception e) {
             tv_end_date.setText("Date not found");
         }
-        //favoritesDatabase=FavoritesDatabase.getInstance(this.getContext());
-        int id=event.getIdEvent();
-        favoriteEvent = new FavoriteEvents(id,event.getEventName(), event.getImgList().get(3).getImageURL(), event.getDates().getStartDate().getDayStartEvent(), tv_end_date.getText().toString());
+        int id = event.getIdEvent();
+        favoriteEvent = new FavoriteEvents(id, event.getEventName(), event.getImgList().get(3).getImageURL(), event.getDates().getStartDate().getDayStartEvent(), tv_end_date.getText().toString());
 
         return view;
     }
+
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -80,6 +85,8 @@ public class EventFragment extends Fragment {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if (isChecked(favoriteButton)) {
                     favoritesViewModel.insert(favoriteEvent);
+                } else {
+                    favoritesViewModel.delete(favoriteEvent);
                 }
 
             }
@@ -91,8 +98,34 @@ public class EventFragment extends Fragment {
     }
 
     private String splitAtACharacter(String word) {
-        String arrayUseToSplit[] = word.split("T");
+        String[] arrayUseToSplit = word.split("T");
         return arrayUseToSplit[0];
     }
+    private void eventChecker(final Event event){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (favoritesViewModel.searchEventById(event.getIdEvent()) != null) {
 
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            favoriteButton.setChecked(true);
+                        }
+                    });
+
+                } else {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            favoriteButton.setChecked(false);
+                        }
+                    });
+
+                }
+            }
+        });
+
+        thread.start();
+    }
 }
