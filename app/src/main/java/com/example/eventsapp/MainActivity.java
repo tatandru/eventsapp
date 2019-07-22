@@ -33,6 +33,16 @@ public class MainActivity extends AppCompatActivity {
         }
         setMenuListener();
     }
+//    @Override
+//    public void passData(String data) {
+//        UpcomingEventsFragment fragmentB = new UpcomingEventsFragment ();
+//        Bundle args = new Bundle();
+//        args.putString(UpcomingEventsFragment.DATA_RECEIVE, data);
+//        fragmentB .setArguments(args);
+//        getFragmentManager().beginTransaction()
+//                .replace(R.id.fragment_container, fragmentB )
+//                .commit();
+//    }
     private void initUI() {
         drawerLayout = findViewById(R.id.drawer_layout);
         drawerMenu = findViewById(R.id.nv_drawer_menu);
