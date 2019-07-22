@@ -207,12 +207,11 @@ public class UpcomingEventsFragment extends Fragment {
 
     }
 
-    static public Object bytes2Object(byte raw[])
+    static Object bytes2Object(byte[] raw)
             throws IOException, ClassNotFoundException {
-        ByteArrayInputStream bais = new ByteArrayInputStream(raw);
-        ObjectInputStream ois = new ObjectInputStream(bais);
-        Object o = ois.readObject();
-        return o;
+        ByteArrayInputStream byteArray = new ByteArrayInputStream(raw);
+        ObjectInputStream ois = new ObjectInputStream(byteArray);
+        return ois.readObject();
     }
     private void setOnQuerySearchView() {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {

@@ -21,7 +21,6 @@ import com.example.eventsapp.database.FavoriteEvents;
 import com.example.eventsapp.database.FavoritesDatabase;
 import com.example.eventsapp.retrofitAPI.Event;
 
-import java.io.IOException;
 import java.util.List;
 
 public class EventFragment extends Fragment {
@@ -36,7 +35,7 @@ public class EventFragment extends Fragment {
     private FavoriteEvents favoriteEvent;
     private FavoritesDatabase favoritesDatabase;
     private LiveData<List<FavoriteEvents>> events;
-    private FavoriteEvents eventChecker;
+    private FavoriteEvents newEvent;
 
     @Nullable
     @Override
@@ -46,11 +45,7 @@ public class EventFragment extends Fragment {
         try {
             event = (Event) UpcomingEventsFragment.bytes2Object(bundle.getByteArray("event"));
             System.out.println(event.toString());
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
+        } catch (Exception e){
             e.printStackTrace();
         }
         eventImage = view.findViewById(R.id.iv_event_image);
@@ -60,7 +55,7 @@ public class EventFragment extends Fragment {
         favoriteButton = view.findViewById(R.id.btn_heart);
         favoritesViewModel = new EventsViewModel(getActivity().getApplication());
         eventChecker(event);
-        Glide.with(this.getContext()).load(event.getImgList().get(3).getImageURL()).into(eventImage);
+        Glide.with(this.getActivity()).load(event.getImgList().get(3).getImageURL()).into(eventImage);
         tv_event_name.setText(event.getEventName());
         tv_start_date.setText(event.getDates().getStartDate().getDayStartEvent());
 
@@ -128,4 +123,8 @@ public class EventFragment extends Fragment {
 
         thread.start();
     }
+//    EventFragment(FavoriteEvents event){
+//        this.newEvent =event;
+//    }
+//    EventFragment(){}
 }
