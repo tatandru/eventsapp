@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +46,7 @@ public class UpcomingEventsFragment extends Fragment {
     private TextView txtIdEvent;
     private List<Event> eventListRV;
     private List<Event> eventsFromHomePage;
+    private SearchView searchView;
 
     @Nullable
     @Override
@@ -53,6 +55,7 @@ public class UpcomingEventsFragment extends Fragment {
         tvTitle = view.findViewById(R.id.tv_title_upcoming_events);
         rvItems = view.findViewById(R.id.rv_events_list);
 
+        searchView=view.findViewById(R.id.sv_search_event);
 
         Bundle bundle = getArguments();
 
@@ -120,6 +123,7 @@ public class UpcomingEventsFragment extends Fragment {
                 }
             }
         });
+        setOnQuerySearchView();
         return view;
     }
 
@@ -213,5 +217,23 @@ public class UpcomingEventsFragment extends Fragment {
         ObjectInputStream ois = new ObjectInputStream(bais);
         Object o = ois.readObject();
         return o;
+    }
+    private void setOnQuerySearchView() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+               // resetSearchView();
+                adapter.getFilter().filter(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return true;
+
+
+            }
+        });
     }
 }
