@@ -58,26 +58,26 @@ public class FilterFragment extends Fragment {
         public void passData(String data);
     }
     DataPassListener mCallback;
-    @Override
-    public void onAttach(Context context)
-    {
-        super.onAttach(context);
-        // This makes sure that the host activity has implemented the callback interface
-        // If not, it throws an exception
-        try
-        {
-            mCallback = (DataPassListener) context;
-        }
-        catch (ClassCastException e)
-        {
-            throw new ClassCastException(context.toString()+ " must implement OnImageClickListener");
-        }
-    }
+//    @Override
+//    public void onAttach(Context context)
+//    {
+//        super.onAttach(context);
+//        // This makes sure that the host activity has implemented the callback interface
+//        // If not, it throws an exception
+//        try
+//        {
+//            mCallback = (DataPassListener) context;
+//        }
+//        catch (ClassCastException e)
+//        {
+//            throw new ClassCastException(context.toString()+ " must implement OnImageClickListener");
+//        }
+//    }
     @TargetApi(Build.VERSION_CODES.O)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.filter_events, container, false);
+       final View view = inflater.inflate(R.layout.filter_events, container, false);
         tv_start_date = view.findViewById(R.id.tv_start_date);
         tv_end_date = view.findViewById(R.id.tv_end_date);
         btn_filter = view.findViewById(R.id.btn_filter);
@@ -87,9 +87,6 @@ public class FilterFragment extends Fragment {
         tv_min_price = view.findViewById(R.id.tv_price_min);
 
         clickOnStartDate();
-
-
-
 
         final Bundle bundle = getArguments();
 
@@ -148,7 +145,7 @@ public class FilterFragment extends Fragment {
             }
         });
 
-        seekBar.setMin((int) getMinPrice());
+        seekBar.setLeft((int) getMinPrice());
         seekBar.setMax((int) getMaxPrice());
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -177,12 +174,12 @@ public class FilterFragment extends Fragment {
         btn_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (view.getId() == R.id.passDataButton) {
+                if (view.getId() == R.id.btn_filter) {
                     mCallback.passData("Text to pass FragmentB");
                 }
             }
         });
-    }
+
         btn_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
