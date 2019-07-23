@@ -14,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UpcomingEventsFragment extends Fragment {
-    public static final String DATA_RECEIVE ="data_received" ;
+    public static final String DATA_RECEIVE = "data_received";
     private ImageView imageView;
     private RecyclerView rvItems;
     private EventsListRVAdapter adapter;
@@ -47,7 +46,7 @@ public class UpcomingEventsFragment extends Fragment {
     private Event thisEvent;
     private List<Integer> idEventsDataSet;
     private TextView txtIdEvent;
-    private ArrayList<Event> eventListRV;
+    private List<Event> eventListRV;
     private List<Event> eventsFromHomePage;
     private SearchView searchView;
 
@@ -58,7 +57,7 @@ public class UpcomingEventsFragment extends Fragment {
         tvTitle = view.findViewById(R.id.tv_title_upcoming_events);
         rvItems = view.findViewById(R.id.rv_events_list);
 
-        searchView=view.findViewById(R.id.sv_search_event);
+        searchView = view.findViewById(R.id.sv_search_event);
 
         Bundle bundle = getArguments();
 
@@ -96,7 +95,7 @@ public class UpcomingEventsFragment extends Fragment {
 
         }
         System.out.println();
-        setupList();   setOnQuerySearchView();
+        setupList();
         imageView = (ImageView) view.findViewById(R.id.img_filter_logo);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +122,7 @@ public class UpcomingEventsFragment extends Fragment {
                 }
             }
         });
-
+        setOnQuerySearchView();
         return view;
     }
 
@@ -144,17 +143,16 @@ public class UpcomingEventsFragment extends Fragment {
         }*/
         super.onResume();
     }
+
     private void setupList() {
         layoutManager = new LinearLayoutManager(getContext());  // use a linear layout manager vertical
         rvItems.setLayoutManager(layoutManager);
 
         generateDataSet();
 
-
         Log.e("UpcomingEventsFragment", embedded.getEventList().toString());
 
         adapter = new EventsListRVAdapter(thisEvent, embedded, eventListRV, eventTitleDataSet, urlDateSet, getContext());
-        adapter.notifyDataSetChanged();
         adapter.setCategoryClickListener(new EventsListRVAdapter.ItemClickListener() {
             @Override
             public void onClick(String os, Event event) {
@@ -180,9 +178,6 @@ public class UpcomingEventsFragment extends Fragment {
             }
         });
         rvItems.setAdapter(adapter);
-
-        adapter.notifyDataSetChanged();
-        rvItems.setItemAnimator(new DefaultItemAnimator());
     }
 
 
@@ -198,11 +193,6 @@ public class UpcomingEventsFragment extends Fragment {
         eventListRV.addAll(eventsFromHomePage);
 
 
-
-
-
-
-
     }
 
     private void retrieveImageOfEvent(String eventName, Event event) {
@@ -213,21 +203,20 @@ public class UpcomingEventsFragment extends Fragment {
 
     }
 
-    static public Object bytes2Object(byte raw[])
+    static Object bytes2Object(byte[] raw)
             throws IOException, ClassNotFoundException {
-        ByteArrayInputStream bais = new ByteArrayInputStream(raw);
-        ObjectInputStream ois = new ObjectInputStream(bais);
-        Object o = ois.readObject();
-        return o;
+        ByteArrayInputStream byteArray = new ByteArrayInputStream(raw);
+        ObjectInputStream ois = new ObjectInputStream(byteArray);
+        return ois.readObject();
     }
+
     private void setOnQuerySearchView() {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-               // resetSearchView();
-                searchView.onActionViewCollapsed();
+                // resetSearchView();
                 adapter.getFilter().filter(query);
-
+                searchView.onActionViewCollapsed();
                 return true;
             }
 

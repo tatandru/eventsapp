@@ -28,9 +28,8 @@ public class EventsListRVAdapter extends RecyclerView.Adapter<EventsListRVAdapte
     private List<String> eventsList;
     private List<String> urlImagesList;
     private List<Integer> idEventList;
-    private ArrayList<Event> eventList;
+    private List<Event> eventList;
     private ArrayList<Event> copyEventList;
-    private ArrayList<Event> originaList;
     private ItemClickListener itemClickListener;
     private Context context;
     private Embedded embedded;
@@ -42,7 +41,7 @@ public class EventsListRVAdapter extends RecyclerView.Adapter<EventsListRVAdapte
     }
 
 
-    public EventsListRVAdapter(Event event, Embedded embedded, ArrayList<Event> eventList, List<String> items, List<String> urlImages, Context context) {
+    public EventsListRVAdapter(Event event, Embedded embedded, List<Event> eventList, List<String> items, List<String> urlImages, Context context) {
         this.eventsList = new ArrayList<>(2);
         this.urlImagesList = new ArrayList<>(2);
         this.idEventList = new ArrayList<>(2);
@@ -110,7 +109,6 @@ public class EventsListRVAdapter extends RecyclerView.Adapter<EventsListRVAdapte
 
         }
     }
-
     @Override
     public Filter getFilter() {
 

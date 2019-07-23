@@ -273,7 +273,7 @@ public class HomepageFragment extends Fragment {
     }
 
 
-    static public byte[] object2Bytes(Object o) throws IOException {
+    static byte[] object2Bytes(Object o) throws IOException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(o);
