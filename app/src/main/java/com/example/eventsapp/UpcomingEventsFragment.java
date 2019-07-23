@@ -14,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -47,7 +46,7 @@ public class UpcomingEventsFragment extends Fragment {
     private Event thisEvent;
     private List<Integer> idEventsDataSet;
     private TextView txtIdEvent;
-    private ArrayList<Event> eventListRV;
+    private List<Event> eventListRV;
     private List<Event> eventsFromHomePage;
     private SearchView searchView;
 
@@ -96,7 +95,7 @@ public class UpcomingEventsFragment extends Fragment {
 
         }
         System.out.println();
-        setupList();   setOnQuerySearchView();
+        setupList();
         imageView = (ImageView) view.findViewById(R.id.img_filter_logo);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +122,7 @@ public class UpcomingEventsFragment extends Fragment {
                 }
             }
         });
-
+        setOnQuerySearchView();
         return view;
     }
 
@@ -150,11 +149,9 @@ public class UpcomingEventsFragment extends Fragment {
 
         generateDataSet();
 
-
         Log.e("UpcomingEventsFragment", embedded.getEventList().toString());
 
         adapter = new EventsListRVAdapter(thisEvent, embedded, eventListRV, eventTitleDataSet, urlDateSet, getContext());
-        adapter.notifyDataSetChanged();
         adapter.setCategoryClickListener(new EventsListRVAdapter.ItemClickListener() {
             @Override
             public void onClick(String os, Event event) {
@@ -180,9 +177,6 @@ public class UpcomingEventsFragment extends Fragment {
             }
         });
         rvItems.setAdapter(adapter);
-
-        adapter.notifyDataSetChanged();
-        rvItems.setItemAnimator(new DefaultItemAnimator());
     }
 
 
@@ -224,9 +218,8 @@ public class UpcomingEventsFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
                // resetSearchView();
-                searchView.onActionViewCollapsed();
                 adapter.getFilter().filter(query);
-
+                searchView.onActionViewCollapsed();
                 return true;
             }
 
