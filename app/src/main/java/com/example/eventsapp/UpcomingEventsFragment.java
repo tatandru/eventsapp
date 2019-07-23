@@ -1,5 +1,7 @@
 package com.example.eventsapp;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,20 +20,29 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventsapp.adapters.EventsListRVAdapter;
-import com.example.eventsapp.database.EventsViewModel;
-import com.example.eventsapp.database.FavoriteEvents;
-import com.example.eventsapp.database.FavoritesDatabase;
 import com.example.eventsapp.retrofitAPI.Embedded;
 import com.example.eventsapp.retrofitAPI.Event;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class UpcomingEventsFragment extends Fragment {
-    public static final String DATA_RECEIVE = "data_received";
+    final static String SHARED_FILTER_INTEGER = "sharedFilterInt";
+    final static String SHARED_FILTER_START_DATE = "sharedStartDate";
+    final static String SHARED_FILTER_END_DATE = "sharedEndDate";
+    final static String SHARED_FILTER_VALIDATOR = "sharedValidator";
+
+    final static String FILTER_MAX_VALUE_INTEGER = "filterMaxValue";
+    final static String FILTER_START_DATE_STRING = "filterStartDate";
+    final static String FILTER_END_DATE_STRING = "filterEndDate";
+    final static String FILTER_VALIDATOR_BOOLEAN = "filterValidator";
+
     private ImageView imageView;
     private RecyclerView rvItems;
     private EventsListRVAdapter adapter;
@@ -49,6 +60,11 @@ public class UpcomingEventsFragment extends Fragment {
     private List<Event> eventListRV;
     private List<Event> eventsFromHomePage;
     private SearchView searchView;
+    private int filterPrice;
+    private String startDate;
+    private String endDate;
+    private Boolean isFiltred = false;
+    private ArrayList<Event> oldEventListRV;
 
     @Nullable
     @Override
@@ -56,8 +72,11 @@ public class UpcomingEventsFragment extends Fragment {
         View view = inflater.inflate(R.layout.upcoming_events_layout, container, false);
         tvTitle = view.findViewById(R.id.tv_title_upcoming_events);
         rvItems = view.findViewById(R.id.rv_events_list);
-
         searchView = view.findViewById(R.id.sv_search_event);
+
+        getSharedPrefData();
+        Log.e("OnResumeUpcoming", filterPrice + " " + startDate + " " + endDate + " " + isFiltred);
+        Log.e("onStartUpcomingView", filterPrice + "  " + startDate + "  " + endDate + " ");
 
         Bundle bundle = getArguments();
 
@@ -69,7 +88,6 @@ public class UpcomingEventsFragment extends Fragment {
             urlRetrieveFromServer = bundle.getStringArrayList("img");
             nameOfEventRetrieveFromHomePage = bundle.getStringArrayList("name_of_event");
             idEventListFromServer = bundle.getIntegerArrayList("idEvents");
-
 
             try {
                 embedded = (Embedded) bytes2Object(bundle.getByteArray("As"));
@@ -97,51 +115,111 @@ public class UpcomingEventsFragment extends Fragment {
         System.out.println();
         setupList();
         imageView = (ImageView) view.findViewById(R.id.img_filter_logo);
+
+
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
+
+                if (eventListRV.size() < 1) {
+                    Toast.makeText(getContext(), "No events found !", Toast.LENGTH_SHORT).show();
+                    getFragmentManager().popBackStack();
+
+                } else {
+                    try {
 
 
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    FilterFragment filterFragment = new FilterFragment();
-                    Bundle bundle1 = new Bundle();
-                    for (int i = 0; i < eventListRV.size(); i++) {
-                        System.out.println(eventListRV.get(i));
+                        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                        FilterFragment filterFragment = new FilterFragment();
+
+
+                        Bundle bundle1 = new Bundle();
+                        for (int i = 0; i < eventListRV.size(); i++) {
+                            System.out.println(eventListRV.get(i));
+                        }
+                        for (int i = 0; i < eventListRV.size(); i++) {
+                            System.out.println(">>>>>>" + eventListRV.get(i));
+                        }
+                        bundle1.putByteArray("eventListOnOneCategory", HomepageFragment.object2Bytes(eventListRV));
+                        filterFragment.setArguments(bundle1);
+                        transaction.replace(R.id.fragment_container, filterFragment);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    for (int i = 0; i < eventListRV.size(); i++) {
-                        System.out.println(">>>>>>" + eventListRV.get(i));
-                    }
-                    bundle1.putByteArray("eventListOnOneCategory", HomepageFragment.object2Bytes(eventListRV));
-                    filterFragment.setArguments(bundle1);
-                    transaction.replace(R.id.fragment_container, filterFragment);
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
+
+
             }
         });
+
+
         setOnQuerySearchView();
         return view;
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        discardSharedPref();
+        Log.e("OnAttachUpcoming", filterPrice + " " + startDate + " " + endDate + " " + isFiltred);
+    }
+
+    @Override
     public void onResume() {
-        Log.e("DEBUG", "onResume of LoginFragment");
-        Bundle bundle = getArguments();
-        Boolean f = bundle.getBoolean("isFiltred");
-        System.out.println("sdaasd" + f);
-     /*   try {
-          //  eventListRV= (List<Event>) bytes2Object(bundle.getByteArray("filter_list"));
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }*/
         super.onResume();
+
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        discardSharedPref();
+        Log.e("OnDetachUpcoming", filterPrice + " " + startDate + " " + endDate + " " + isFiltred);
+    }
+
+    /***
+     * My functions
+     * */
+    private void discardSharedPref() {
+
+        filterPrice = -1;
+        startDate = null;
+        endDate = null;
+        isFiltred = false;
+
+        SharedPreferences.Editor editFilterMaxVal = getContext().getSharedPreferences(SHARED_FILTER_INTEGER, MODE_PRIVATE).edit();
+        editFilterMaxVal.putInt(FILTER_MAX_VALUE_INTEGER, -1);
+
+        SharedPreferences.Editor editStartDate = getContext().getSharedPreferences(SHARED_FILTER_START_DATE, MODE_PRIVATE).edit();
+        editStartDate.putString(FILTER_START_DATE_STRING, null);
+
+        SharedPreferences.Editor editEndDate = getContext().getSharedPreferences(SHARED_FILTER_END_DATE, MODE_PRIVATE).edit();
+        editEndDate.putString(FILTER_END_DATE_STRING, null);
+
+        SharedPreferences.Editor editValidator = getContext().getSharedPreferences(SHARED_FILTER_VALIDATOR, MODE_PRIVATE).edit();
+        editValidator.putBoolean(FILTER_VALIDATOR_BOOLEAN, false);
+
+        editFilterMaxVal.apply();
+        editStartDate.apply();
+        editEndDate.apply();
+        editValidator.apply();
+
+    }
+
+    private void getSharedPrefData() {
+        SharedPreferences prefsMaxValPrice = getContext().getSharedPreferences(SHARED_FILTER_INTEGER, MODE_PRIVATE);
+        filterPrice = prefsMaxValPrice.getInt(FILTER_MAX_VALUE_INTEGER, -1);
+
+        SharedPreferences prefsStartDate = getContext().getSharedPreferences(SHARED_FILTER_START_DATE, MODE_PRIVATE);
+        startDate = prefsStartDate.getString(FILTER_START_DATE_STRING, null);
+
+        SharedPreferences prefsEndDate = getContext().getSharedPreferences(SHARED_FILTER_END_DATE, MODE_PRIVATE);
+        endDate = prefsEndDate.getString(FILTER_END_DATE_STRING, null);
+
+        SharedPreferences prefsValidator = getContext().getSharedPreferences(SHARED_FILTER_VALIDATOR, MODE_PRIVATE);
+        isFiltred = prefsValidator.getBoolean(FILTER_VALIDATOR_BOOLEAN, false);
     }
 
     private void setupList() {
@@ -151,6 +229,20 @@ public class UpcomingEventsFragment extends Fragment {
         generateDataSet();
 
         Log.e("UpcomingEventsFragment", embedded.getEventList().toString());
+
+        if (isFiltred) {
+            if (filterPrice != -1) {
+                eventListRV = filterAfterPrice(oldEventListRV);
+            }
+            Log.e("UpcomingFiltratedPrice", "<<<|>>>" + eventListRV.toString());
+            if (startDate.length() <= 0 && endDate.length() <= 0 ) {
+                eventListRV = filterByDate(eventListRV);
+            }
+            Log.e("UpcomingFiltratedDates", "<<<|>>>" + eventListRV.toString());
+
+        } else {
+            eventListRV = oldEventListRV;
+        }
 
         adapter = new EventsListRVAdapter(thisEvent, embedded, eventListRV, eventTitleDataSet, urlDateSet, getContext());
         adapter.setCategoryClickListener(new EventsListRVAdapter.ItemClickListener() {
@@ -182,14 +274,13 @@ public class UpcomingEventsFragment extends Fragment {
 
 
     private void generateDataSet() {
-        eventTitleDataSet = new ArrayList<>();
-        urlDateSet = new ArrayList<>();
+
+        oldEventListRV = new ArrayList<>();
         eventListRV = new ArrayList<>();
 
         System.out.println(nameOfEventRetrieveFromHomePage);
-        //   eventTitleDataSet.addAll(nameOfEventRetrieveFromHomePage);
-        //   urlDateSet.addAll(urlRetrieveFromServer);
 
+        oldEventListRV.addAll(eventsFromHomePage);
         eventListRV.addAll(eventsFromHomePage);
 
 
@@ -229,5 +320,48 @@ public class UpcomingEventsFragment extends Fragment {
 
             }
         });
+    }
+
+
+    private ArrayList<Event> filterAfterPrice(List<Event> list) {
+        ArrayList<Event> eventList = new ArrayList<>();
+        for (Event e : list) {
+
+            if (e.getPriceRangeList() != null) {
+                if (filterPrice >= e.getPriceRangeList().get(0).getMaxPrice()) {
+                    eventList.add(e);
+                }
+            } else {
+                eventList.add(e);
+            }
+        }
+        return eventList;
+    }
+
+    private ArrayList<Event> filterByDate(List<Event> list) {
+        ArrayList<Event> eventList = new ArrayList<>();
+        for (Event e : list) {
+
+            String dateStart = e.getDates().getStartDate().getDayStartEvent();
+            String dateEnd = e.getDates().getStartDate().getDayEndAndTime().split("T")[0];
+
+            Log.e("DateFormatUpcomng", "Local :dateStart" + dateStart + "  " + "Global : startDate " + startDate + "\n");
+            try {
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                //todo : end date in event is not found 
+                if ((dateFormat.parse(startDate).before(dateFormat.parse(dateStart)) && dateFormat.parse(endDate).after(dateFormat.parse(dateEnd)))
+                        || dateFormat.parse(startDate).equals(dateFormat.parse(dateStart)) || dateFormat.parse(endDate).equals(dateFormat.parse(dateEnd))) {
+                    eventList.add(e);
+                    Log.e("ObjFiltredByDate", e.toString() + "\n");
+
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+
+            Log.e("DatesOnUpcoming", dateStart + " " + dateEnd);
+        }
+        return eventList;
     }
 }

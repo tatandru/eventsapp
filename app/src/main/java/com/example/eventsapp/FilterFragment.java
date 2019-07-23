@@ -2,7 +2,7 @@ package com.example.eventsapp;
 
 import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
-import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -15,16 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
-import com.example.eventsapp.retrofitAPI.Embedded;
 import com.example.eventsapp.retrofitAPI.Event;
 import com.ramotion.fluidslider.FluidSlider;
 
@@ -37,10 +34,19 @@ import java.util.List;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 
+import static android.content.Context.MODE_PRIVATE;
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
 public class FilterFragment extends Fragment {
+    final static String SHARED_FILTER_INTEGER = "sharedFilterInt";
+    final static String SHARED_FILTER_START_DATE = "sharedStartDate";
+    final static String SHARED_FILTER_END_DATE = "sharedEndDate";
+    final static String SHARED_FILTER_VALIDATOR = "sharedValidator";
 
+    final static String FILTER_MAX_VALUE_INTEGER = "filterMaxValue";
+    final static String FILTER_START_DATE_STRING = "filterStartDate";
+    final static String FILTER_END_DATE_STRING = "filterEndDate";
+    final static String FILTER_VALIDATOR_BOOLEAN = "filterValidator";
 
     private TextView tv_start_date;
     private TextView tv_end_date;
@@ -56,32 +62,14 @@ public class FilterFragment extends Fragment {
     private DatePickerDialog.OnDateSetListener dp_end_date;
     private List<Event> eventListRV;
     private FluidSlider fluidSlider;
-    private boolean isFiltred=false;
+    private boolean isFiltred = false;
 
-    public interface DataPassListener{
-        public void passData(String data);
-    }
-    DataPassListener mCallback;
-//    @Override
-//    public void onAttach(Context context)
-//    {
-//        super.onAttach(context);
-//        // This makes sure that the host activity has implemented the callback interface
-//        // If not, it throws an exception
-//        try
-//        {
-//            mCallback = (DataPassListener) context;
-//        }
-//        catch (ClassCastException e)
-//        {
-//            throw new ClassCastException(context.toString()+ " must implement OnImageClickListener");
-//        }
-//    }
+
     @TargetApi(Build.VERSION_CODES.O)
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-       final View view = inflater.inflate(R.layout.filter_events, container, false);
+        final View view = inflater.inflate(R.layout.filter_events, container, false);
         tv_start_date = view.findViewById(R.id.tv_start_date);
         tv_end_date = view.findViewById(R.id.tv_end_date);
         btn_filter = view.findViewById(R.id.btn_filter);
@@ -91,15 +79,6 @@ public class FilterFragment extends Fragment {
         clickOnStartDate();
 
         Bundle bundle = getArguments();
-
-        btn_filter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (view.getId() == R.id.btn_filter) {
-                    mCallback.passData("Text to pass FragmentB");
-                }
-            }
-        });
 
         if (bundle != null) {
             eventListRV = new ArrayList<>();
@@ -114,12 +93,11 @@ public class FilterFragment extends Fragment {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-
         }
         final Double max = getMaxPrice();
         final Double min = getMinPrice();
         final Double total = max - min;
-        final float interval = 0.3f;
+        final float interval = 1f;
 
         fluidSlider.setStartText(String.valueOf(min));
         fluidSlider.setEndText(String.valueOf(max));
@@ -147,9 +125,10 @@ public class FilterFragment extends Fragment {
         });
         fluidSlider.setPosition(interval);
 
+
         clickOnStartDate();
 
-        
+
         if (bundle != null) {
             eventListRV = new ArrayList<>();
 
@@ -203,39 +182,16 @@ public class FilterFragment extends Fragment {
             }
         });
 
-        // Suppose that when a button clicked second FragmentB will be inflated
-        // some data on FragmentA will pass FragmentB
-        // Button passDataButton = (Button).........
 
         btn_filter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (view.getId() == R.id.btn_filter) {
-                    mCallback.passData("Text to pass FragmentB");
-                }
-            }
-        });
 
-        btn_filter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                eventListRV=filterAfterPrice(eventListRV);
                 try {
-              /*      isFiltred=true;
-                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
-                    UpcomingEventsFragment eventsFragment = new UpcomingEventsFragment();
-                    Bundle bundle1 = new Bundle();
-                   // bundle1.putInt("seekBar_value", seekBar.getProgress());
-                    System.out.println(isFiltred);
-                    bundle1.putBoolean("isFiltred",isFiltred);
-                   // bundle1.putByteArray("filtred_list",HomepageFragment.object2Bytes(eventListRV));
-                    eventsFragment.setArguments(bundle1);
-                    transaction.replace(R.id.fragment_container, eventsFragment);
-                    transaction.addToBackStack(null);
-                    transaction.commit();*/
+
+                    isFiltred = true;
+                    sendSharePrefData();
                     getFragmentManager().popBackStack();
-
-
 
                 } catch (Exception e) {
 
@@ -246,44 +202,25 @@ public class FilterFragment extends Fragment {
         return view;
 
     }
-    private void printLis(List<Event>list)
-    {
-        for (Event e:list) {
-            System.out.println("____>"+e);
 
-        }
-    }
-    private  List<Event>filterByDate(List<Event> list)
-    {
-        List<Event> eventList = new ArrayList<>();
-        for (Event e : list) {
+    private void sendSharePrefData() {
+        SharedPreferences.Editor editFilterMaxVal = getContext().getSharedPreferences(SHARED_FILTER_INTEGER, MODE_PRIVATE).edit();
+        editFilterMaxVal.putInt(FILTER_MAX_VALUE_INTEGER, filterPrice);
 
-            if (equals(e.getDates().getStartDate().getDayStartEvent())) {
+        SharedPreferences.Editor editStartDate = getContext().getSharedPreferences(SHARED_FILTER_START_DATE, MODE_PRIVATE).edit();
+        editStartDate.putString(FILTER_START_DATE_STRING, tv_start_date.getText().toString());
 
-                if (filterPrice >= e.getPriceRangeList().get(0).getMaxPrice()) {
-                    eventList.add(e);
-                }
-            } else {
-                eventList.add(e);
-            }
-        }
-        return eventList;
-    }
+        SharedPreferences.Editor editEndDate = getContext().getSharedPreferences(SHARED_FILTER_END_DATE, MODE_PRIVATE).edit();
+        editEndDate.putString(FILTER_END_DATE_STRING, tv_end_date.getText().toString());
 
+        SharedPreferences.Editor editValidator = getContext().getSharedPreferences(SHARED_FILTER_VALIDATOR, MODE_PRIVATE).edit();
+        editValidator.putBoolean(FILTER_VALIDATOR_BOOLEAN, isFiltred);
 
-    private List<Event> filterAfterPrice(List<Event> list) {
-        List<Event> eventList = new ArrayList<>();
-        for (Event e : list) {
+        editFilterMaxVal.apply();
+        editStartDate.apply();
+        editEndDate.apply();
+        editValidator.apply();
 
-            if (e.getPriceRangeList()!=null) {
-                if (filterPrice >= e.getPriceRangeList().get(0).getMaxPrice()) {
-                    eventList.add(e);
-                }
-            } else {
-                eventList.add(e);
-            }
-        }
-        return eventList;
     }
 
     private void clickOnEndDate() {
@@ -311,7 +248,7 @@ public class FilterFragment extends Fragment {
                 month = month + 1;
                 Log.d(TAG, "onDateSet: mm/dd/yyy: " + month + "/" + day + "/" + year);
 
-                String date = month + "/" + day + "/" + year;
+                String date = year + "-" + month + "-" + day;
                 tv_end_date.setText(date);
             }
         };
@@ -341,7 +278,7 @@ public class FilterFragment extends Fragment {
                 month = month + 1;
                 Log.d(TAG, "onDateSet: mm/dd/yyy: " + month + "/" + day + "/" + year);
 
-                String date = month + "/" + day + "/" + year;
+                String date = year + "-" + month + "-" + day;
                 tv_start_date.setText(date);
             }
 
