@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UpcomingEventsFragment extends Fragment {
-    public static final String DATA_RECEIVE ="data_received" ;
+    public static final String DATA_RECEIVE = "data_received";
     private ImageView imageView;
     private RecyclerView rvItems;
     private EventsListRVAdapter adapter;
@@ -57,7 +57,7 @@ public class UpcomingEventsFragment extends Fragment {
         tvTitle = view.findViewById(R.id.tv_title_upcoming_events);
         rvItems = view.findViewById(R.id.rv_events_list);
 
-        searchView=view.findViewById(R.id.sv_search_event);
+        searchView = view.findViewById(R.id.sv_search_event);
 
         Bundle bundle = getArguments();
 
@@ -143,6 +143,7 @@ public class UpcomingEventsFragment extends Fragment {
         }*/
         super.onResume();
     }
+
     private void setupList() {
         layoutManager = new LinearLayoutManager(getContext());  // use a linear layout manager vertical
         rvItems.setLayoutManager(layoutManager);
@@ -192,11 +193,6 @@ public class UpcomingEventsFragment extends Fragment {
         eventListRV.addAll(eventsFromHomePage);
 
 
-
-
-
-
-
     }
 
     private void retrieveImageOfEvent(String eventName, Event event) {
@@ -213,11 +209,12 @@ public class UpcomingEventsFragment extends Fragment {
         ObjectInputStream ois = new ObjectInputStream(byteArray);
         return ois.readObject();
     }
+
     private void setOnQuerySearchView() {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-               // resetSearchView();
+                // resetSearchView();
                 adapter.getFilter().filter(query);
                 searchView.onActionViewCollapsed();
                 return true;

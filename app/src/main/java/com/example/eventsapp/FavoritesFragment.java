@@ -21,8 +21,10 @@ import com.example.eventsapp.database.EventsViewModel;
 import com.example.eventsapp.database.FavoriteEvents;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 
@@ -57,14 +59,33 @@ public class FavoritesFragment extends Fragment {
         adapter.setCategoryClickListener(new FavoriteRecyclerViewAdapter.ItemClickListener() {
             @Override
             public void onClick(ImageView item, FavoriteEvents event) {
-//                EventFragment eventFragment = new EventFragment(event);
-//                FragmentTransaction transaction = getFragmentManager().beginTransaction();
-//                transaction.replace(R.id.fragment_container, eventFragment);
-//                transaction.addToBackStack(null);
-//                transaction.commit();
+                try {
+                    Bundle bundle = new Bundle();
+                    bundle.putByteArray("event1", object2Bytes(event));
+                    EventFragment eventFragment=new EventFragment();
+                    FragmentTransaction transaction = getFragmentManager().beginTransaction();
+                    eventFragment.setArguments(bundle);
+                    transaction.replace(R.id.fragment_container, eventFragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
 
 
             }
         });
+    }
+    static Object bytes2Object(byte[] raw)
+            throws IOException, ClassNotFoundException {
+        ByteArrayInputStream byteArray = new ByteArrayInputStream(raw);
+        ObjectInputStream ois = new ObjectInputStream(byteArray);
+        return ois.readObject();
+    }
+    static byte[] object2Bytes(Object o) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(o);
+        return baos.toByteArray();
     }
 }
