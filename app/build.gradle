@@ -46,4 +46,6 @@ dependencies {
     annotationProcessor 'androidx.room:room-compiler:2.1.0'
     //Slide bar
     implementation 'com.ramotion.fluidslider:fluid-slider:0.3.1'
+    implementation 'joda-time:joda-time:2.10.3'
+
 }
