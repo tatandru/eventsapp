@@ -72,7 +72,7 @@ public class EventsListRVAdapter extends RecyclerView.Adapter<EventsListRVAdapte
 
         final Event event = this.eventList.get(i);
         final String item = event.getEventName();
-        final String url = event.getImgList().get(i).getImageURL();
+        final String url = event.getImgList().get(3).getImageURL();
 
 
         Log.e("EventsListRVAdapter", "Event : > " + item);
