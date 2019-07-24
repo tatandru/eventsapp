@@ -47,4 +47,7 @@ public class EventsViewModel extends AndroidViewModel {
     public FavoriteEvents searchEventById(int id){
         return repository.searchEventById(id);
     }
+    public List<String> getAllStartDates(){
+        return repository.getAllStartDates();
+    }
 }

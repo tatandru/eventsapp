@@ -28,4 +28,6 @@ public interface FavoritesDao {
     FavoriteEvents searchEventByStartDate(String startDate);
     @Query("Select * from FavoriteEvents where id=:id")
     FavoriteEvents searchEventById(int id);
+    @Query("Select startDate from FavoriteEvents")
+    List<String> getAllStartDates();
 }

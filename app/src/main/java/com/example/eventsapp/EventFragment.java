@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -12,16 +11,11 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-
 
 import com.bumptech.glide.Glide;
 import com.example.eventsapp.database.EventsViewModel;
 import com.example.eventsapp.database.FavoriteEvents;
-import com.example.eventsapp.database.FavoritesDatabase;
 import com.example.eventsapp.retrofitAPI.Event;
-
-import java.util.List;
 
 public class EventFragment extends Fragment {
 
@@ -33,8 +27,6 @@ public class EventFragment extends Fragment {
     private EventsViewModel favoritesViewModel;
     private ImageView eventImage;
     private FavoriteEvents newFavoriteEvent;
-    private FavoritesDatabase favoritesDatabase;
-    private LiveData<List<FavoriteEvents>> events;
     private FavoriteEvents favoriteEvent;
 
     @Nullable
@@ -52,28 +44,25 @@ public class EventFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        favoriteButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (isChecked(favoriteButton)) {
-                    if (newFavoriteEvent != null) {
-                        favoritesViewModel.insert(newFavoriteEvent);
-                    } else {
-                        if (favoriteEvent != null) {
-                            favoritesViewModel.insert(favoriteEvent);
-                        }
-                    }
+        favoriteButton.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (isChecked(favoriteButton)) {
+                if (newFavoriteEvent != null) {
+                    favoritesViewModel.insert(newFavoriteEvent);
                 } else {
-                    if (newFavoriteEvent != null) {
-                        favoritesViewModel.delete(newFavoriteEvent);
-                    } else {
-                        if (favoriteEvent != null) {
-                            favoritesViewModel.delete(favoriteEvent);
-                        }
+                    if (favoriteEvent != null) {
+                        favoritesViewModel.insert(favoriteEvent);
                     }
                 }
-
+            } else {
+                if (newFavoriteEvent != null) {
+                    favoritesViewModel.delete(newFavoriteEvent);
+                } else {
+                    if (favoriteEvent != null) {
+                        favoritesViewModel.delete(favoriteEvent);
+                    }
+                }
             }
+
         });
     }
 
@@ -87,27 +76,14 @@ public class EventFragment extends Fragment {
     }
 
     private void isFavorite(final Event event) {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                if (favoritesViewModel.searchEventById(event.getIdEvent()) != null) {
+        Thread thread = new Thread(() -> {
+            if (favoritesViewModel.searchEventById(event.getIdEvent()) != null) {
 
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            favoriteButton.setChecked(true);
-                        }
-                    });
+                getActivity().runOnUiThread(() -> favoriteButton.setChecked(true));
 
-                } else {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            favoriteButton.setChecked(false);
-                        }
-                    });
+            } else {
+                getActivity().runOnUiThread(() -> favoriteButton.setChecked(false));
 
-                }
             }
         });
 
@@ -156,4 +132,5 @@ public class EventFragment extends Fragment {
             e.printStackTrace();
         }
     }
+
 }
