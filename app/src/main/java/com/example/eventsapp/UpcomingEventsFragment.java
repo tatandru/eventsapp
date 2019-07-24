@@ -389,7 +389,7 @@ public class UpcomingEventsFragment extends Fragment {
                     } else {
                         listViewSuggestions.setVisibility(View.INVISIBLE);
                     }
-                    if(searchView.getQuery().length()<3)
+                    if (searchView.getQuery().length() < 3)
                         tvNoSuggestion.setVisibility(View.VISIBLE);
                 }
                 adapter.getFilter().filter(newText);
@@ -404,12 +404,12 @@ public class UpcomingEventsFragment extends Fragment {
             public boolean onClose() {
                 tvSubtitleUpcoming.setVisibility(View.VISIBLE);
                 imgFilter.setVisibility(View.VISIBLE);
+                rvItems.setVisibility(View.VISIBLE);
                 tvTitle.setVisibility(View.VISIBLE);
                 return false;
             }
         });
     }
-
 
 
     private ArrayList<Event> filterAfterPrice(List<Event> list) {
