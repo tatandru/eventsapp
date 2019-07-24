@@ -7,7 +7,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,6 +68,12 @@ public class UpcomingEventsFragment extends Fragment {
     private String endDate;
     private Boolean isFiltred = false;
     private ArrayList<Event> oldEventListRV;
+    private ArrayAdapter<String> adapterSuggestions;
+    private ListView listViewSuggestions;
+    private ArrayList<String> list;
+    private TextView tvSubtitleUpcoming;
+    private TextView tvNoSuggestion;
+
 
     @Nullable
     @Override
@@ -73,7 +82,9 @@ public class UpcomingEventsFragment extends Fragment {
         tvTitle = view.findViewById(R.id.tv_title_upcoming_events);
         rvItems = view.findViewById(R.id.rv_events_list);
         searchView = view.findViewById(R.id.sv_search_event);
-
+        listViewSuggestions = view.findViewById(R.id.lv_list_of_suggestion);
+        tvSubtitleUpcoming = view.findViewById(R.id.tv_subtitle);
+        tvNoSuggestion = view.findViewById(R.id.tv_no_suggestion);
         getSharedPrefData();
         Log.e("OnResumeUpcoming", filterPrice + " " + startDate + " " + endDate + " " + isFiltred);
         Log.e("onStartUpcomingView", filterPrice + "  " + startDate + "  " + endDate + " ");
@@ -155,6 +166,12 @@ public class UpcomingEventsFragment extends Fragment {
 
 
         setOnQuerySearchView();
+        list = new ArrayList<>();
+        for (Event e : eventListRV) {
+            list.add(e.getEventName());
+        }
+        adapterSuggestions = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, list);
+        listViewSuggestions.setAdapter(adapterSuggestions);
         return view;
     }
 
@@ -301,25 +318,98 @@ public class UpcomingEventsFragment extends Fragment {
     }
 
     private void setOnQuerySearchView() {
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                rvItems.setVisibility(View.INVISIBLE);
+                tvSubtitleUpcoming.setVisibility(View.INVISIBLE);
+                imgFilter.setVisibility(View.INVISIBLE);
+
+                tvTitle.setVisibility(View.INVISIBLE);
+                listViewSuggestions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        String listItem = listViewSuggestions.getItemAtPosition(position).toString();
+                        searchView.onActionViewCollapsed();
+                        adapter.getFilter().filter(listItem);
+                        tvNoSuggestion.setVisibility(View.INVISIBLE);
+                        listViewSuggestions.setVisibility(View.INVISIBLE);
+                        rvItems.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+        });
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 // resetSearchView();
-                adapter.getFilter().filter(query);
+
+                listViewSuggestions.setVisibility(View.INVISIBLE);
+                rvItems.setVisibility(View.VISIBLE);
+                tvSubtitleUpcoming.setVisibility(View.VISIBLE);
+                tvTitle.setVisibility(View.VISIBLE);
                 searchView.onActionViewCollapsed();
+                adapter.getFilter().filter(query);
+                if (rvItems == null)
+                    tvNoSuggestion.setVisibility(View.VISIBLE);
+                else {
+                    if (adapterSuggestions.getCount() == 0) {
+                        tvNoSuggestion.setVisibility(View.VISIBLE);
+                    } else {
+                        tvNoSuggestion.setVisibility(View.INVISIBLE);
+                    }
+                }
+
+
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                tvNoSuggestion.setVisibility(View.INVISIBLE);
+                if (searchView.getQuery().length() == 0) {
+                    tvSubtitleUpcoming.setVisibility(View.VISIBLE);
+                    tvTitle.setVisibility(View.VISIBLE);
+                    imgFilter.setVisibility(View.VISIBLE);
+                    listViewSuggestions.setVisibility(View.GONE);
+                    rvItems.setVisibility(View.VISIBLE);
+                } else {
 
+                    listViewSuggestions.setVisibility(View.VISIBLE);
+                    rvItems.setVisibility(View.INVISIBLE);
+                    tvSubtitleUpcoming.setVisibility(View.INVISIBLE);
+                    imgFilter.setVisibility(View.INVISIBLE);
+                    tvTitle.setVisibility(View.INVISIBLE);
+                    adapterSuggestions.getFilter().filter(newText);
+                    Log.e("Query Text >>>>>>>>", newText.length() + "");
+                    if (searchView.getQuery().length() > 2) {
+                        listViewSuggestions.setVisibility(View.VISIBLE);
+
+                    } else {
+                        listViewSuggestions.setVisibility(View.INVISIBLE);
+                    }
+                    if(searchView.getQuery().length()<3)
+                        tvNoSuggestion.setVisibility(View.VISIBLE);
+                }
                 adapter.getFilter().filter(newText);
+
                 return true;
 
 
             }
         });
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+            @Override
+            public boolean onClose() {
+                tvSubtitleUpcoming.setVisibility(View.VISIBLE);
+                imgFilter.setVisibility(View.VISIBLE);
+                tvTitle.setVisibility(View.VISIBLE);
+                return false;
+            }
+        });
     }
+
 
 
     private ArrayList<Event> filterAfterPrice(List<Event> list) {
