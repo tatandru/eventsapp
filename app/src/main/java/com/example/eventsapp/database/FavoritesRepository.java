@@ -48,6 +48,9 @@ public class FavoritesRepository {
     FavoriteEvents searchEventById(int id) {
         return favoritesDao.searchEventById(id);
     }
+    List<String> getAllStartDates(){
+        return favoritesDao.getAllStartDates();
+    }
 
     private static class InsertEventAsyncTask extends AsyncTask<FavoriteEvents, Void, Void> {
         private FavoritesDao favoritesDao;

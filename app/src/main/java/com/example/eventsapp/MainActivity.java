@@ -1,30 +1,36 @@
 package com.example.eventsapp;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+
 import com.google.android.material.navigation.NavigationView;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+
 import android.view.MenuItem;
 import android.widget.Toast;
-
 
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
     private NavigationView drawerMenu;
-    private static final String CHANNEL_ID = "1";
+    private boolean settingsChecker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences settings = getSharedPreferences("reminder", MODE_PRIVATE);
+        settingsChecker = settings.getBoolean("isSet", true);
+        if (settingsChecker) {
+            MyJobService.scheduleJob(this);
+        }
         setContentView(R.layout.drawer_menu);
-
-
         initUI();
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomepageFragment()).commit();
@@ -32,16 +38,7 @@ public class MainActivity extends AppCompatActivity {
         }
         setMenuListener();
     }
-//    @Override
-//    public void passData(String data) {
-//        UpcomingEventsFragment fragmentB = new UpcomingEventsFragment ();
-//        Bundle args = new Bundle();
-//        args.putString(UpcomingEventsFragment.DATA_RECEIVE, data);
-//        fragmentB .setArguments(args);
-//        getFragmentManager().beginTransaction()
-//                .replace(R.id.fragment_container, fragmentB )
-//                .commit();
-//    }
+
     private void initUI() {
         drawerLayout = findViewById(R.id.drawer_layout);
         drawerMenu = findViewById(R.id.nv_drawer_menu);
@@ -68,14 +65,14 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case R.id.favorites:
                         //Toast.makeText(MainActivity.this, "Favorites", Toast.LENGTH_SHORT).show();
-                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FavoritesFragment()).addToBackStack(null).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FavoritesFragment()).addToBackStack(null).commit();
                         break;
                     case R.id.feedback:
                         Toast.makeText(MainActivity.this, "Feedback", Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.settings:
                         //Toast.makeText(MainActivity.this, "Settings", Toast.LENGTH_SHORT).show();
-                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SettingsFragment()).addToBackStack(null).commit();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new SettingsFragment()).addToBackStack(null).commit();
 
                         break;
                     default:
@@ -112,5 +109,4 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
 }

@@ -11,16 +11,11 @@ import android.widget.ToggleButton;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.LiveData;
-
 
 import com.bumptech.glide.Glide;
 import com.example.eventsapp.database.EventsViewModel;
 import com.example.eventsapp.database.FavoriteEvents;
-import com.example.eventsapp.database.FavoritesDatabase;
 import com.example.eventsapp.retrofitAPI.Event;
-
-import java.util.List;
 
 public class EventFragment extends Fragment {
 
@@ -137,4 +132,5 @@ public class EventFragment extends Fragment {
             e.printStackTrace();
         }
     }
+
 }
