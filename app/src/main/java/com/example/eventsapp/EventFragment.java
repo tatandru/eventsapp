@@ -1,22 +1,15 @@
 package com.example.eventsapp;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
 
@@ -27,14 +20,10 @@ import com.example.eventsapp.database.FavoriteEvents;
 import com.example.eventsapp.database.FavoritesDatabase;
 import com.example.eventsapp.retrofitAPI.Event;
 
-import java.nio.channels.Channel;
 import java.util.List;
-
-import static androidx.core.content.ContextCompat.getSystemService;
 
 public class EventFragment extends Fragment {
 
-    private static final String CHANNEL_ID = "1";
     private TextView tv_event_name;
     private TextView tv_start_date;
     private TextView tv_end_date;
@@ -43,8 +32,6 @@ public class EventFragment extends Fragment {
     private EventsViewModel favoritesViewModel;
     private ImageView eventImage;
     private FavoriteEvents newFavoriteEvent;
-    private FavoritesDatabase favoritesDatabase;
-    private LiveData<List<FavoriteEvents>> events;
     private FavoriteEvents favoriteEvent;
 
     @Nullable
@@ -66,8 +53,6 @@ public class EventFragment extends Fragment {
             if (isChecked(favoriteButton)) {
                 if (newFavoriteEvent != null) {
                     favoritesViewModel.insert(newFavoriteEvent);
-                    createNotificationChannel();
-                    showANotification();
                 } else {
                     if (favoriteEvent != null) {
                         favoritesViewModel.insert(favoriteEvent);
@@ -150,28 +135,6 @@ public class EventFragment extends Fragment {
             favoriteButton.setChecked(true);
         } catch (Exception e) {
             e.printStackTrace();
-        }
-    }
-
-    private void showANotification() {
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this.getActivity(), CHANNEL_ID)
-                .setSmallIcon(R.drawable.heart_icon)
-                .setContentTitle("Notification")
-                .setContentText("asdadfasdf")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this.getActivity());
-        notificationManager.notify(1, builder.build());
-    }
-
-    private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            CharSequence name = getString(R.string.channel_name);
-            String description = getString(R.string.channel_description);
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
-            channel.setDescription(description);
-            NotificationManager notificationManager = getSystemService(this.getContext(), NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
         }
     }
 }

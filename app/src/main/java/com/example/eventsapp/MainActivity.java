@@ -1,35 +1,23 @@
 package com.example.eventsapp;
 
 import android.os.Bundle;
-
-import com.example.eventsapp.database.EventsViewModel;
 import com.google.android.material.navigation.NavigationView;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-import org.joda.time.LocalDate;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle toggle;
     private NavigationView drawerMenu;
+    private static final String CHANNEL_ID = "1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,22 +112,5 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-    public int getRemainingDays(){
-        int daysDifference;
-        DateTime startDate;
-        DateTimeFormatter formatter= DateTimeFormat.forPattern("yyyy-MM-dd");
-        DateTime currentTime = formatter.parseDateTime(String.valueOf(LocalDate.now()));
-        EventsViewModel viewModel = new EventsViewModel(this.getApplication());
-        try {
-            for (int i = 0; i < viewModel.getAllEvents().getValue().size(); i++) {
-               startDate= formatter.parseDateTime(viewModel.getAllEvents().getValue().get(i).getStartDate());
-                daysDifference=Days.daysBetween(currentTime,startDate).getDays();
-
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-        }
-    }
-
 
 }
