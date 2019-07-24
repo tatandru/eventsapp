@@ -43,7 +43,7 @@ public class UpcomingEventsFragment extends Fragment {
     final static String FILTER_END_DATE_STRING = "filterEndDate";
     final static String FILTER_VALIDATOR_BOOLEAN = "filterValidator";
 
-    private ImageView imageView;
+    private ImageView imgFilter;
     private RecyclerView rvItems;
     private EventsListRVAdapter adapter;
     private TextView tvTitle;
@@ -114,10 +114,10 @@ public class UpcomingEventsFragment extends Fragment {
         }
         System.out.println();
         setupList();
-        imageView = (ImageView) view.findViewById(R.id.img_filter_logo);
+        imgFilter = (ImageView) view.findViewById(R.id.img_filter_logo);
 
 
-        imageView.setOnClickListener(new View.OnClickListener() {
+        imgFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -149,7 +149,6 @@ public class UpcomingEventsFragment extends Fragment {
                         e.printStackTrace();
                     }
                 }
-
 
             }
         });
@@ -235,7 +234,7 @@ public class UpcomingEventsFragment extends Fragment {
                 eventListRV = filterAfterPrice(oldEventListRV);
             }
             Log.e("UpcomingFiltratedPrice", "<<<|>>>" + eventListRV.toString());
-            if (startDate.length() <= 0 && endDate.length() <= 0 ) {
+            if (startDate.length() <= 0 && endDate.length() <= 0 && startDate != null && endDate != null && startDate != "" && endDate != "") {
                 eventListRV = filterByDate(eventListRV);
             }
             Log.e("UpcomingFiltratedDates", "<<<|>>>" + eventListRV.toString());
@@ -348,13 +347,16 @@ public class UpcomingEventsFragment extends Fragment {
             Log.e("DateFormatUpcomng", "Local :dateStart" + dateStart + "  " + "Global : startDate " + startDate + "\n");
             try {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                //todo : end date in event is not found 
-                if ((dateFormat.parse(startDate).before(dateFormat.parse(dateStart)) && dateFormat.parse(endDate).after(dateFormat.parse(dateEnd)))
+                //todo : end date in event is not found
+
+                if (!startDate.isEmpty() && (dateFormat.parse(startDate).before(dateFormat.parse(dateStart)) && dateFormat.parse(endDate).after(dateFormat.parse(dateEnd)))
                         || dateFormat.parse(startDate).equals(dateFormat.parse(dateStart)) || dateFormat.parse(endDate).equals(dateFormat.parse(dateEnd))) {
                     eventList.add(e);
                     Log.e("ObjFiltredByDate", e.toString() + "\n");
 
                 }
+
+
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
