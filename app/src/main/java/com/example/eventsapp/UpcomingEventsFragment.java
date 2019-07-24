@@ -234,7 +234,7 @@ public class UpcomingEventsFragment extends Fragment {
                 eventListRV = filterAfterPrice(oldEventListRV);
             }
             Log.e("UpcomingFiltratedPrice", "<<<|>>>" + eventListRV.toString());
-            if (startDate.length() <= 0 && endDate.length() <= 0 && startDate != null && endDate != null && startDate != "" && endDate != "") {
+            if (startDate.length() >= 0 && endDate.length() >= 0 && startDate != null && endDate != null && startDate != "" && endDate != "") {
                 eventListRV = filterByDate(eventListRV);
             }
             Log.e("UpcomingFiltratedDates", "<<<|>>>" + eventListRV.toString());
