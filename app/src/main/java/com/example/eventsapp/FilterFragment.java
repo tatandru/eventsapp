@@ -26,6 +26,8 @@ import com.example.eventsapp.retrofitAPI.Event;
 import com.ramotion.fluidslider.FluidSlider;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -104,7 +106,10 @@ public class FilterFragment extends Fragment {
         fluidSlider.setBeginTrackingListener(new Function0<Unit>() {
             @Override
             public Unit invoke() {
-                turnOnButtonVisbility();
+                if (CheckDates(tv_start_date.getText().toString(), tv_end_date.getText().toString())) {
+                    turnOnButtonVisbility();
+
+                }
                 Log.d("D", "setBeginTrackingListener");
                 return Unit.INSTANCE;
             }
@@ -154,13 +159,16 @@ public class FilterFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 tv_to.setVisibility(View.VISIBLE);
                 tv_end_date.setVisibility(View.VISIBLE);
+                if (!CheckDates(tv_start_date.getText().toString(), tv_end_date.getText().toString())) {
+                    turnOffButtonVisbility();
+                    Toast.makeText(getContext(), "Set start date before end date", Toast.LENGTH_LONG).show();
+                }
 
             }
         });
@@ -178,7 +186,14 @@ public class FilterFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                turnOnButtonVisbility();
+                if (CheckDates(tv_start_date.getText().toString(), tv_end_date.getText().toString())) {
+                    turnOnButtonVisbility();
+
+                } else {
+                    turnOffButtonVisbility();
+                    Toast.makeText(getContext(), "Set start date before end date", Toast.LENGTH_LONG).show();
+                }
+
             }
         });
 
@@ -237,6 +252,7 @@ public class FilterFragment extends Fragment {
                         android.R.style.Theme_Holo_Light_Dialog_MinWidth,
                         dp_start_date,
                         year, month, day);
+                dialog.getDatePicker().setMinDate(cal.getTimeInMillis());
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
             }
@@ -268,6 +284,7 @@ public class FilterFragment extends Fragment {
                         android.R.style.Theme_Holo_Light_Dialog_MinWidth,
                         dp_end_date,
                         year, month, day);
+                dialog.getDatePicker().setMinDate(cal.getTimeInMillis());
                 dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                 dialog.show();
             }
@@ -316,5 +333,27 @@ public class FilterFragment extends Fragment {
 
     }
 
+    private void turnOffButtonVisbility() {
+        btn_filter.setVisibility(View.INVISIBLE);
+
+    }
+
+    public static boolean CheckDates(String d1, String d2) {
+        SimpleDateFormat dfDate = new SimpleDateFormat("yyyy-MM-dd");
+        boolean b = false;
+        try {
+            if (dfDate.parse(d1).before(dfDate.parse(d2))) {
+                b = true;//If start date is before end date
+            } else if (dfDate.parse(d1).equals(dfDate.parse(d2))) {
+                b = true;//If two dates are equal
+            } else {
+                b = false; //If start date is after the end date
+            }
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return b;
+    }
 
 }
