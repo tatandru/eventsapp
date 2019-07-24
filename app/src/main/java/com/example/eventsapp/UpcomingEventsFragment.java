@@ -431,19 +431,23 @@ public class UpcomingEventsFragment extends Fragment {
         ArrayList<Event> eventList = new ArrayList<>();
         for (Event e : list) {
 
-            String dateStart = e.getDates().getStartDate().getDayStartEvent();
-            String dateEnd = e.getDates().getStartDate().getDayEndAndTime().split("T")[0];
 
-            Log.e("DateFormatUpcomng", "Local :dateStart" + dateStart + "  " + "Global : startDate " + startDate + "\n");
             try {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                //todo : end date in event is not found
+                if (!e.getDates().getStartDate().getDayStartEvent().isEmpty() && !e.getDates().getStartDate().getDayEndAndTime().isEmpty()) {
+                    String dateStart = e.getDates().getStartDate().getDayStartEvent();
+                    String dateEnd = e.getDates().getStartDate().getDayEndAndTime().split("T")[0];
+                    Log.e("DateFormatUpcomng", "Local :dateStart" + dateStart + "  " + "Global : startDate " + startDate + "\n");
 
-                if (!startDate.isEmpty() && (dateFormat.parse(startDate).before(dateFormat.parse(dateStart)) && dateFormat.parse(endDate).after(dateFormat.parse(dateEnd)))
-                        || dateFormat.parse(startDate).equals(dateFormat.parse(dateStart)) || dateFormat.parse(endDate).equals(dateFormat.parse(dateEnd))) {
-                    eventList.add(e);
-                    Log.e("ObjFiltredByDate", e.toString() + "\n");
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                    //todo : end date in event is not found
 
+                    if (!startDate.isEmpty() && (dateFormat.parse(startDate).before(dateFormat.parse(dateStart)) && dateFormat.parse(endDate).after(dateFormat.parse(dateEnd)))
+                            || dateFormat.parse(startDate).equals(dateFormat.parse(dateStart)) || dateFormat.parse(endDate).equals(dateFormat.parse(dateEnd))) {
+                        eventList.add(e);
+                        Log.e("ObjFiltredByDate", e.toString() + "\n");
+
+                    }
+                    Log.e("DatesOnUpcoming", dateStart + " " + dateEnd);
                 }
 
 
@@ -451,8 +455,6 @@ public class UpcomingEventsFragment extends Fragment {
                 ex.printStackTrace();
             }
 
-
-            Log.e("DatesOnUpcoming", dateStart + " " + dateEnd);
         }
         return eventList;
     }
