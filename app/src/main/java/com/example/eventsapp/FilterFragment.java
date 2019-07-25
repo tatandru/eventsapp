@@ -106,10 +106,8 @@ public class FilterFragment extends Fragment {
         fluidSlider.setBeginTrackingListener(new Function0<Unit>() {
             @Override
             public Unit invoke() {
-                if (CheckDates(tv_start_date.getText().toString(), tv_end_date.getText().toString())) {
-                    turnOnButtonVisbility();
 
-                }
+
                 Log.d("D", "setBeginTrackingListener");
                 return Unit.INSTANCE;
             }
@@ -117,6 +115,9 @@ public class FilterFragment extends Fragment {
         fluidSlider.setEndTrackingListener(new Function0<Unit>() {
             @Override
             public Unit invoke() {
+                if (tv_end_date.getVisibility() == View.GONE) {
+                    turnOnButtonVisbility();
+                }
                 Log.d("D", "setEndTrackingListener");
                 return Unit.INSTANCE;
             }
@@ -167,7 +168,9 @@ public class FilterFragment extends Fragment {
                 tv_end_date.setVisibility(View.VISIBLE);
                 if (!CheckDates(tv_start_date.getText().toString(), tv_end_date.getText().toString())) {
                     turnOffButtonVisbility();
-                    Toast.makeText(getContext(), "Set start date before end date", Toast.LENGTH_LONG).show();
+                    //  Toast.makeText(getContext(), "Set end date to be greater then start date", Toast.LENGTH_LONG).show();
+                } else {
+                    turnOnButtonVisbility();
                 }
 
             }
@@ -191,7 +194,7 @@ public class FilterFragment extends Fragment {
 
                 } else {
                     turnOffButtonVisbility();
-                    Toast.makeText(getContext(), "Set start date before end date", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Set end date to be greater then start date", Toast.LENGTH_LONG).show();
                 }
 
             }
