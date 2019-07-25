@@ -66,19 +66,9 @@ public class CategoriesRVAdapter extends RecyclerView.Adapter<CategoriesRVAdapte
         citiesViewHolder.txtItem.setText(item);
 
         Glide.with(context)
-                .asBitmap()
                 .load(url)
                 .fitCenter()
-                .into(new CustomTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(@NonNull Bitmap resource, @Nullable Transition<? super Bitmap> transition) {
-                        citiesViewHolder.categoryIcon.setImageBitmap(resource);
-                    }
-
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-                    }
-                });
+                .into(citiesViewHolder.categoryIcon);
 
         citiesViewHolder.locationItemRoot.setOnClickListener(new View.OnClickListener() {
             @Override
