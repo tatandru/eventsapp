@@ -13,9 +13,21 @@
         android:layout_height="100dp"
         app:layout_constraintBottom_toTopOf="@id/txt_categoryItem"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/tv_events_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="1 events"
+        android:textColor="@color/purpleLight"
+        app:layout_constraintBottom_toTopOf="@+id/txt_categoryItem"
+        app:layout_constraintEnd_toEndOf="@+id/txt_categoryItem"
+        app:layout_constraintStart_toStartOf="@+id/txt_categoryItem"
+        app:layout_constraintTop_toBottomOf="@+id/img_categoryItem" />
 
     <TextView
         android:id="@+id/txt_categoryItem"
