@@ -3,11 +3,13 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
-
+    <color name="washedOrange">#94E66F15</color>
 
     <color name="purpleMain">#CA92E3</color>
     <color name="purpleDark">#5E4070</color>
     <color name="blueMain">#474070</color>
     <color name="purpleLight">#70406a</color>
-    <color name="whiteMain">#F9F8F8</color>
+    <color name="whiteMain">#FFFFFF</color>
+    <color name="washedGrey">#BCDFD1D1</color>
+    <color name="black">#000000</color>
 </resources>

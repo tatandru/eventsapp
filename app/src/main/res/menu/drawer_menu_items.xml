@@ -1,15 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/homepage"
-        android:title="@string/home_page"/>
-    <item android:id="@+id/favorites"
-        android:title="@string/favorites"/>
-    <item android:id="@+id/calendar"
-        android:title="@string/calendar"/>
-    <item android:id="@+id/settings"
-        android:title="@string/settings"/>
-    <item android:id="@+id/feedback"
-        android:title="@string/feedback"/>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <group android:id="@+id/menu_homepage">
+        <item
+            android:id="@+id/homepage"
+            android:title="@string/home_page" />
+    </group>
+    <group android:id="@+id/menu_favorites">
+        <item
+            android:id="@+id/favorites"
+            android:title="@string/favorites" />
+    </group>
+    <group android:id="@+id/menu_calendar">
+        <item
+            android:id="@+id/calendar"
+            android:title="@string/calendar" />
+    </group>
+    <group android:id="@+id/menu_settings">
+        <item
+            android:id="@+id/settings"
+            android:title="@string/settings" />
+    </group>
+    <group android:id="@+id/menu_feedback">
+        <item
+            android:id="@+id/feedback"
+            android:title="@string/feedback" />
+    </group>
 
 
 </menu>
