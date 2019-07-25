@@ -10,10 +10,16 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -73,6 +79,9 @@ public class HomepageFragment extends Fragment {
     private String cityName;
     private Embedded embedded;
     private List<Event> eventList;
+    private List<Event> allEventsList;
+    private List<Event> toBeChangedList;
+    private ImageView imgClearSearch;
 
     @Nullable
     @Override
@@ -82,8 +91,45 @@ public class HomepageFragment extends Fragment {
         retrofit = RetrofitClient.getInstance();
         rvItems = view.findViewById(R.id.rv_categories);
         searchBar = view.findViewById(R.id.et_search_bar);
+        imgClearSearch = view.findViewById(R.id.img_clear_search);
 
         loadEvents();
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                try {
+
+                    eventList = locationFilter(baseRouteEventsBody.getEmbedded().getEventList());
+                    toBeChangedList = eventList;
+                    adapter.setAllEventList(eventList);
+                    adapter.notifyDataSetChanged();
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        imgClearSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchBar.setText("");
+                eventList = baseRouteEventsBody.getEmbedded().getEventList();
+                toBeChangedList = eventList;
+                setupList(eventList);
+                adapter.notifyDataSetChanged();
+            }
+        });
         return view;
     }
 
@@ -138,6 +184,7 @@ public class HomepageFragment extends Fragment {
             @Override
             public void onResponse(Call<BaseRouteEvents> call, Response<BaseRouteEvents> response) {
 
+                allEventsList = new ArrayList<>();
                 baseRouteEventsBody = response.body();
 
                 embedded = baseRouteEventsBody.getEmbedded();
@@ -157,6 +204,7 @@ public class HomepageFragment extends Fragment {
                     int imageListSize = baseRouteEventsBody.getEmbedded().getEventList().get(i).getImgList().size();
                     List<String> imageList = new ArrayList<>();
                     System.out.println("------>" + baseRouteEventsBody.getEmbedded().getEventList().get(i));
+                    allEventsList = baseRouteEventsBody.getEmbedded().getEventList();
 
 
                     for (int j = 0; j < classificationListSize; j++) {
@@ -196,10 +244,12 @@ public class HomepageFragment extends Fragment {
                     }
 
                 }
-                System.out.println(subCategories.toString());
-                System.out.println(imgThreeInList.toString());
+                if (!searchBar.getText().toString().isEmpty()) {
+                    setupList(locationFilter(eventList));
+                } else {
+                    setupList(allEventsList);
+                }
 
-                setupList();
             }
 
             @Override
@@ -211,7 +261,7 @@ public class HomepageFragment extends Fragment {
 
     }
 
-    private void setupList() {
+    private void setupList(List<Event> allEventsList) {
         //  layoutManager = new LinearLayoutManager(getContext());  // use a linear layout manager vertical
         layoutManager = new GridLayoutManager(getContext(), 2);  // use a grid layout manager with 2 columns
         rvItems.setLayoutManager(layoutManager);
@@ -219,7 +269,7 @@ public class HomepageFragment extends Fragment {
 
         generateDataSet();
 
-        adapter = new CategoriesRVAdapter(subCategoriesMain, urlDataSetMain, getContext());
+        adapter = new CategoriesRVAdapter(subCategoriesMain, urlDataSetMain, allEventsList, getContext());
         adapter.setCategoryClickListener(new CategoriesRVAdapter.ItemClickListener() {
             @Override
             public void onClick(String os) {
@@ -229,17 +279,16 @@ public class HomepageFragment extends Fragment {
                     UpcomingEventsFragment eventsFragment = new UpcomingEventsFragment();
 
 
-                    eventList = retrievefEvent(os);
-
-
                     if (!searchBar.getText().toString().isEmpty()) {
-                        eventList = locationFilter(eventList);
+                        toBeChangedList = retrievefEvent(os);
+                    } else {
+                        toBeChangedList = retrievefAllEvent(os);
                     }
 
 
                     ArrayList<Integer> idList = new ArrayList<>();
                     for (int i = 0; i < imgUpcomingEventNameList.size(); i++) {
-                        eventList.get(i).setIdEvent(i);
+                        toBeChangedList.get(i).setIdEvent(i);
                         idList.add(i);
                         Log.e("HomepageFragment", imgUpcomingEventNameList.get(i) + " " + embedded.getEventList().get(i).getIdEvent() + "");
                     }
@@ -252,8 +301,8 @@ public class HomepageFragment extends Fragment {
                         bundle.putStringArrayList("img", imgEventsInList);
                         bundle.putStringArrayList("name_of_event", imgUpcomingEventNameList);
                         eventsFragment.setArguments(bundle);//data being send to SecondFragment
-                        Log.e("HomepageFragment", eventList.toString());
-                        bundle.putByteArray("eventListSubcategories", object2Bytes(eventList));
+                        Log.e("HomepageFragment", toBeChangedList.toString());
+                        bundle.putByteArray("eventListSubcategories", object2Bytes(toBeChangedList));
                         eventsFragment.setArguments(bundle); //data being send to SecondFragment
 
                         transaction.replace(R.id.fragment_container, eventsFragment);
@@ -350,6 +399,27 @@ public class HomepageFragment extends Fragment {
     }
 
     private List<Event> retrievefEvent(String event) {
+
+        List<Event> tempList = new ArrayList<>();
+        for (int i = 0; i < toBeChangedList.size(); i++) {
+            for (int j = 0; j < toBeChangedList.get(i).getClassficationList().size(); j++)
+                if (event.equals(toBeChangedList.get(i).getClassficationList().get(j).getGenre().getEventGenre())) {
+                    System.out.println(baseRouteEventsBody.getEmbedded().getEventList().get(i).getEventName());
+                    // imgEventsInList.add(baseRouteEventsBody.getEmbedded().getEventList().get(i).getImgList().get(3).getImageURL());
+                    // imgUpcomingEventNameList.add(baseRouteEventsBody.getEmbedded().getEventList().get(i).getEventName());
+                    String suCateg = baseRouteEventsBody.getEmbedded().getEventList().get(i).getClassficationList().get(j).getGenre().getEventGenre();
+                    tempList.add(toBeChangedList.get(i));
+//                    if (suCateg.equals(subCategoriesMain.get(j))) {
+//                        counter++;
+//                    }
+                    Log.e("HomepageFragment", "Lista de event pe categorie :" + baseRouteEventsBody.getEmbedded().getEventList().get(i).toString());
+                }
+
+        }
+        return tempList;
+    }
+
+    private List<Event> retrievefAllEvent(String event) {
         imgEventsInList = new ArrayList<>();
         imgUpcomingEventNameList = new ArrayList<>();
         eventList = new ArrayList<>();
