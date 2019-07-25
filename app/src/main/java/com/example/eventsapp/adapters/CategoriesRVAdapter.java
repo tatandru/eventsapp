@@ -108,7 +108,12 @@ public class CategoriesRVAdapter extends RecyclerView.Adapter<CategoriesRVAdapte
             }
         }
         citiesViewHolder.txtItem.setText(item);
-        citiesViewHolder.tvEventCounter.setText(counter + " events found !");
+        if (counter == 1) {
+            citiesViewHolder.tvEventCounter.setText(counter + " event found !");
+        } else {
+            citiesViewHolder.tvEventCounter.setText(counter + " events found !");
+        }
+
 
         Glide.with(context)
                 .load(url)
