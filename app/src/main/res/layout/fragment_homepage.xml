@@ -7,6 +7,19 @@
     android:layout_height="match_parent">
 
 
+    <ImageView
+        android:id="@+id/img_clear_search"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="@dimen/marginNormal"
+        android:layout_marginTop="@dimen/marginNormal"
+        android:layout_marginEnd="@dimen/marginNormal"
+        android:layout_marginBottom="@dimen/marginNormal"
+        android:background="@drawable/exit"
+        app:layout_constraintBottom_toBottomOf="@+id/et_search_bar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/homepage_right_guideline"
+        app:layout_constraintTop_toTopOf="@+id/guideline25" />
     <Button
         android:id="@+id/btn_request_location"
         android:layout_width="50dp"

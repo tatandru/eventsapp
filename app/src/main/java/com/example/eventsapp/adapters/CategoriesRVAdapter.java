@@ -29,6 +29,7 @@ public class CategoriesRVAdapter extends RecyclerView.Adapter<CategoriesRVAdapte
     private final LayoutInflater inflater;
     private List<String> categoriesList;
     private List<String> urlImagesList;
+    private List<Event> allEventList;
     private ItemClickListener itemClickListener;
     private Context context;
 
@@ -37,17 +38,47 @@ public class CategoriesRVAdapter extends RecyclerView.Adapter<CategoriesRVAdapte
     }
 
 
-    public CategoriesRVAdapter(List<String> items, List<String> urlImages, Context context) {
+    public CategoriesRVAdapter(List<String> items, List<String> urlImages, List<Event> eventCounterList, Context context) {
         this.categoriesList = new ArrayList<>(2);
         this.urlImagesList = new ArrayList<>(2);
+        this.allEventList = new ArrayList<>(2);
         this.categoriesList = items;
         this.urlImagesList = urlImages;
+        this.allEventList = eventCounterList;
         this.inflater = LayoutInflater.from(context);
         this.context = context;
     }
 
     public interface ItemClickListener {
         void onClick(String item);
+    }
+
+    public void resetEventCounterList() {
+        allEventList.clear();
+    }
+
+    public List<String> getCategoriesList() {
+        return categoriesList;
+    }
+
+    public void setCategoriesList(List<String> categoriesList) {
+        this.categoriesList = categoriesList;
+    }
+
+    public List<Event> getAllEventList() {
+        return allEventList;
+    }
+
+    public void setAllEventList(List<Event> allEventList) {
+        this.allEventList = allEventList;
+    }
+
+    public List<String> getUrlImagesList() {
+        return urlImagesList;
+    }
+
+    public void setUrlImagesList(List<String> urlImagesList) {
+        this.urlImagesList = urlImagesList;
     }
 
     @NonNull
@@ -62,8 +93,22 @@ public class CategoriesRVAdapter extends RecyclerView.Adapter<CategoriesRVAdapte
 
         final String item = this.categoriesList.get(i);
         final String url = this.urlImagesList.get(i);
+        int counter = 0;
 
+
+        for (int j = 0; j < allEventList.size(); j++) {
+            Event e = allEventList.get(j);
+            for (int z = 0; z < e.getClassficationList().size(); z++) {
+
+                String suCateg = e.getClassficationList().get(z).getGenre().getEventGenre();
+
+                if (suCateg.equals(item)) {
+                    counter++;
+                }
+            }
+        }
         citiesViewHolder.txtItem.setText(item);
+        citiesViewHolder.tvEventCounter.setText(counter + " events found !");
 
         Glide.with(context)
                 .load(url)
@@ -90,6 +135,7 @@ public class CategoriesRVAdapter extends RecyclerView.Adapter<CategoriesRVAdapte
         private final View locationItemRoot;
         private final TextView txtItem;
         private final ImageView categoryIcon;
+        private final TextView tvEventCounter;
 
 
         ItemsViewHolder(final View itemView) {
@@ -97,6 +143,7 @@ public class CategoriesRVAdapter extends RecyclerView.Adapter<CategoriesRVAdapte
             this.locationItemRoot = itemView.findViewById(R.id.cl_categoryRootItem);
             this.txtItem = itemView.findViewById(R.id.txt_categoryItem);
             this.categoryIcon = itemView.findViewById(R.id.img_categoryItem);
+            this.tvEventCounter = itemView.findViewById(R.id.tv_events_counter);
 
         }
     }
