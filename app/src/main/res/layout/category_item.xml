@@ -6,12 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/round_margin"
-    android:layout_marginLeft="@dimen/marginNormal"
-    android:layout_marginRight="@dimen/marginNormal"
-    android:layout_marginTop="16dp"
-    android:layout_marginBottom="16dp"
-    tools:layout_editor_absoluteX="8dp"
-    tools:layout_editor_absoluteY="8dp">
+    android:layout_margin="8dp">
 
     <ImageView
         android:id="@+id/img_categoryItem"
@@ -33,7 +28,7 @@
         android:text="Salut"
         android:textAllCaps="true"
         android:textStyle="bold"
-        android:textColor="@color/purpleDark"
+        android:textColor="@color/black"
         android:textSize="@dimen/txtNormal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/img_categoryItem"
