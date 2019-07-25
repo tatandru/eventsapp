@@ -23,9 +23,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.settings, container, false);
-        imageView = view.findViewById(R.id.img_x_logout);
         aSwitch=view.findViewById(R.id.sw_reminder);
-        imageView.setOnClickListener(v -> getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomepageFragment()).commit());
         return view;
     }
 
