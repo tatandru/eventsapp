@@ -5,17 +5,18 @@
     android:id="@+id/cl_categoryRootItem"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp">
+    android:layout_margin="8dp"
+    android:background="@drawable/rectangle">
 
     <ImageView
         android:id="@+id/img_categoryItem"
         android:layout_width="140dp"
         android:layout_height="100dp"
-        app:layout_constraintBottom_toTopOf="@id/txt_categoryItem"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_events_counter"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        />
 
     <TextView
         android:id="@+id/tv_events_counter"
@@ -25,8 +26,8 @@
         android:text="1 events"
         android:textColor="@color/purpleLight"
         app:layout_constraintBottom_toTopOf="@+id/txt_categoryItem"
-        app:layout_constraintEnd_toEndOf="@+id/txt_categoryItem"
-        app:layout_constraintStart_toStartOf="@+id/txt_categoryItem"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/img_categoryItem" />
 
     <TextView
@@ -44,7 +45,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/img_categoryItem"
-        app:layout_constraintTop_toBottomOf="@+id/img_categoryItem" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_events_counter" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

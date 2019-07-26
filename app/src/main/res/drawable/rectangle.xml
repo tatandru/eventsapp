@@ -5,6 +5,6 @@
     android:top="2dp"
     android:right="2dp"
     android:bottom="2dp" />
-<corners android:radius="5dp" />
-<solid android:color="@color/cardview_shadow_start_color" />
+<corners android:radius="7dp" />
+<solid android:color="#FFD1B7" />
 </shape>
