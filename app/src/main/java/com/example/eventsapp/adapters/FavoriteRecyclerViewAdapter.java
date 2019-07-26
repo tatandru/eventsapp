@@ -60,6 +60,15 @@ public class FavoriteRecyclerViewAdapter extends RecyclerView.Adapter<FavoriteRe
                 }
             }
         });
+        holder.title.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (itemClickListener != null) {
+                    itemClickListener.onClick(holder.eventImage, event);
+
+                }
+            }
+        });
     }
 
     @Override
