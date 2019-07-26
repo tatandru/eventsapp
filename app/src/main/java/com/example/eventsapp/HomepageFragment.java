@@ -465,7 +465,7 @@ public class HomepageFragment extends Fragment {
                     }
                 };
 
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 3600*1000, 5000, locationListener);
                 locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                 locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
             }
