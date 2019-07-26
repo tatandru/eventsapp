@@ -173,6 +173,7 @@ public class UpcomingEventsFragment extends Fragment {
         adapterSuggestions = new ArrayAdapter<String>(getContext(), android.R.layout.simple_list_item_1, list);
         listViewSuggestions.setAdapter(adapterSuggestions);
         return view;
+
     }
 
     @Override
@@ -185,6 +186,9 @@ public class UpcomingEventsFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        if (adapter.getItemCount() < 1) {
+            tvNoSuggestion.setVisibility(View.VISIBLE);
+        }
 
     }
 
