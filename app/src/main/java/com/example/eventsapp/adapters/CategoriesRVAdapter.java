@@ -109,9 +109,9 @@ public class CategoriesRVAdapter extends RecyclerView.Adapter<CategoriesRVAdapte
         }
         citiesViewHolder.txtItem.setText(item);
         if (counter == 1) {
-            citiesViewHolder.tvEventCounter.setText(counter + " event found !");
+            citiesViewHolder.tvEventCounter.setText(counter + " event found");
         } else {
-            citiesViewHolder.tvEventCounter.setText(counter + " events found !");
+            citiesViewHolder.tvEventCounter.setText(counter + " events found");
         }
 
 
