@@ -35,4 +35,5 @@
     <string name="choose_location">Choose location</string>
     <string name="channel_name">Event Reminder</string>
     <string name="channel_description">Reminds you about an upcoming event from your favorites</string>
+    <string name="no_favorite_events">No Favorite Events</string>
 </resources>
