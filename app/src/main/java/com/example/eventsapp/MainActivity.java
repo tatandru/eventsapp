@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle toggle;
     private NavigationView drawerMenu;
     private boolean settingsChecker;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         drawerMenu = findViewById(R.id.nv_drawer_menu);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
