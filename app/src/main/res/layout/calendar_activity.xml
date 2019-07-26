@@ -10,41 +10,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/marginNormal"
-        android:layout_marginEnd="@dimen/marginNormal"
-        android:layout_marginBottom="8dp"
-        android:background="@color/purpleDark"
+        android:layout_margin="8dp"
+        android:background="#FF8760"
         android:orientation="vertical"
         app:layout_constraintBottom_toTopOf="@+id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
-
-        <TextView
-            android:id="@+id/txt_EventsDescriptionTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/marginNormal"
-            android:layout_marginTop="@dimen/marginNormal"
-            android:layout_marginBottom="@dimen/marginNormal"
-            android:text="Your List of scheduled Events"
-            android:textColor="@color/whiteMain"
-            android:textSize="15dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:layout_width="300dp"
-            android:layout_height="5dp"
-            android:layout_marginStart="@dimen/marginNormal"
-            android:background="@color/whiteMain" />
-
-        <ImageView
-            android:layout_width="100dp"
-            android:layout_height="5dp"
-            android:layout_marginStart="@dimen/marginNormal"
-            android:layout_marginTop="@dimen/marginNormal"
-            android:background="@color/whiteMain" />
 
         <TextView
             android:id="@+id/txt_currentDay"
@@ -54,7 +25,7 @@
             android:layout_marginTop="@dimen/marginNormal"
             android:layout_marginBottom="@dimen/marginNormal"
             android:text="Thu, April 6"
-            android:textColor="@color/whiteMain"
+            android:textColor="@color/black"
             android:textSize="@dimen/txtTitle"
             android:textStyle="bold" />
 
@@ -87,7 +58,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.3" />
+        app:layout_constraintGuide_percent="0.22" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

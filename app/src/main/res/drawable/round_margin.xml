@@ -4,12 +4,12 @@
     >
 
     <corners android:radius="20dp" />
-    <solid android:color="@color/whiteMain">
+    <solid android:color="@color/washedGrey">
 
     </solid>
     <stroke
 
         android:width="2dp"
-        android:color="@color/purpleMain"
+        android:color="@color/washedOrange"
         android:dashGap="@android:dimen/app_icon_size" />
 </shape>
